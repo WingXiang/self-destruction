@@ -265,10 +265,11 @@
   .warn-note{margin-top:20px;background:#fdecea;border:1px solid #f5c6c3;border-left:4px solid #dc3545;border-radius:10px;padding:14px 16px;font-size:clamp(13px,2.8vw,15px);color:#8a1f1f;font-weight:700;line-height:1.8;display:flex;gap:12px;align-items:flex-start;}
   .warn-note .ic{font-size:20px;flex:0 0 auto;}
 
-  /* Shown only when opened inside LINE's in-app browser (external links may not open otherwise) */
-  .line-banner{display:none;margin-top:26px;background:#fff7e6;border:1px solid #f0d9a6;border-left:4px solid #c68a13;border-radius:12px;padding:14px 16px;font-size:clamp(13px,2.8vw,15px);color:#7a5510;line-height:1.8;gap:12px;align-items:flex-start;}
-  .line-banner.show{display:flex;}
-  .line-banner .ic{font-size:20px;flex:0 0 auto;}
+  /* Dynamically created on demand (e.g. iPad + LINE, where in-app navigation is known to fail) — not a static page element */
+  .line-escape-hint{display:none;position:fixed;left:16px;right:16px;bottom:16px;z-index:9999;max-width:480px;margin:0 auto;background:#fff7e6;border:1px solid #f0d9a6;border-left:4px solid #c68a13;border-radius:12px;padding:14px 16px;font-size:clamp(13px,2.8vw,15px);color:#7a5510;line-height:1.7;gap:12px;align-items:flex-start;box-shadow:0 8px 24px rgba(0,0,0,.18);}
+  .line-escape-hint.show{display:flex;}
+  .line-escape-hint .ic{font-size:20px;flex:0 0 auto;}
+  .line-escape-hint .close-btn{margin-left:auto;background:none;border:none;color:#7a5510;font-size:18px;line-height:1;cursor:pointer;flex:0 0 auto;padding:0 2px;font-family:inherit;}
 
   /* Copyright — bottom center of every page */
   .copyright{text-align:center;color:var(--ink-soft);font-size:13px;letter-spacing:.04em;padding:22px 12px 8px;line-height:1.8;}
@@ -372,7 +373,6 @@
   <section id="screen-result" class="card" style="display:none;">
     <div class="user-badge-wrap"><span class="user-badge">填答者：<span id="user-badge-name"></span></span></div>
     <h1 class="center">你的測驗結果</h1>
-    <p class="step-guide"><span class="ic">👉</span><span>操作方式：點擊下方各領域卡片標題可展開查看詳細建議</span></p>
 
     <div id="result-capture">
       <div class="section-block">
@@ -412,11 +412,6 @@
         <p>如果你發現自己不是第一次卡在這裡，<br>而是反覆出現相似的狀況，<br>那就代表：<span class="em-primary">這個模式，值得被更深入看見。</span></p>
       </div>
     </div>
-
-    <div class="line-banner" id="line-banner">
-      <span class="ic">📲</span>
-         </div>
-
     <div class="cta">
       <h3>✨ 預約潛意識信念校準諮詢</h3>
       <p>歡迎填寫表單，預約每月限量 3 場的潛意識信念校準諮詢。</p>
@@ -948,6 +943,10 @@ function isIOSDevice(){
   return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
          (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 }
+function isIPadDevice(){
+  return /iPad/.test(navigator.userAgent) ||
+         (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
 
 function canvasToBlob(canvas){
   return new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 1.0));
@@ -1096,9 +1095,10 @@ function isAndroidUA(){
  * - 許多簡易的 App 內建瀏覽器並未真正支援 target="_blank" 開新分頁，點擊常會被直接吃掉、毫無反應。
  * - 因此在 LINE 環境下一律攔截點擊，改由程式主動導向：
  *   - Android：透過 intent:// 協議請系統用預設瀏覽器開啟，等同完全跳出 LINE 的 WebView。
- *   - iOS（WKWebView 沒有官方支援的 JS 強制跳出方式）：直接在目前分頁導向目標網址，
- *     至少確保點擊後一定會開啟內容，而不是因為 target=_blank 被忽略而毫無反應；
- *     若使用者想改用手機真正的瀏覽器，畫面上另有提示引導使用 LINE 自帶的「在瀏覽器中開啟」。
+ *   - iPhone/iPod：直接在目前分頁導向目標網址即可正常顯示（已實測確認）。
+ *   - iPad：已實測確認 LINE 的 iPad 內建瀏覽器對 Instagram 等頁面會顯示錯誤，
+ *     即使直接在網址列手動輸入同一網址也一樣會出錯，因此在頁面內導向並無意義，
+ *     改為提示使用者改用 LINE 自帶的「在瀏覽器中開啟」功能，才能用真正的 Safari 正常顯示。
  * 一般瀏覽器（不在 LINE 內）完全不受影響，維持原本 target="_blank" 開新分頁的行為。
  */
 function handleExternalLinkClick(e, url){
@@ -1111,6 +1111,8 @@ function handleExternalLinkClick(e, url){
       const fallback = encodeURIComponent(url);
       // 加上 S.browser_fallback_url：即使 intent 解析失敗，仍會退回原本網址開啟，提高成功率
       location.href = "intent://" + stripped + "#Intent;scheme=" + scheme + ";S.browser_fallback_url=" + fallback + ";end";
+    } else if (isIPadDevice()){
+      showLineEscapeHint();
     } else {
       location.href = url;
     }
@@ -1118,6 +1120,24 @@ function handleExternalLinkClick(e, url){
     console.warn("導向外部連結失敗，改用原本網址：", err);
     location.href = url;
   }
+}
+
+// 自行建立提示元素（不依賴頁面上是否留有靜態的 banner 區塊），只在真的需要時才出現，
+// 避免非 iPad/非 LINE 的一般使用者平白多看到一段用不到的說明文字。
+function showLineEscapeHint(){
+  let hint = document.getElementById("line-escape-hint");
+  if (!hint){
+    hint = document.createElement("div");
+    hint.id = "line-escape-hint";
+    hint.className = "line-escape-hint";
+    hint.innerHTML =
+      '<span class="ic">📲</span>' +
+      '<div>LINE 的 iPad 內建瀏覽器目前無法正常開啟這個連結，請點擊畫面右上角「⋮」或「···」選單，選擇「在瀏覽器中開啟」，改用 Safari 開啟即可正常顯示。</div>' +
+      '<button type="button" class="close-btn" aria-label="關閉">✕</button>';
+    hint.querySelector(".close-btn").addEventListener("click", () => hint.classList.remove("show"));
+    document.body.appendChild(hint);
+  }
+  hint.classList.add("show");
 }
 
 /* ============ Shareable result link (automatic, no manual save step) ============ */
@@ -1209,9 +1229,6 @@ try {
   document.querySelectorAll(".btn-cta, .act.fb, .act.ig").forEach(a => {
     a.addEventListener("click", (e) => handleExternalLinkClick(e, a.href));
   });
-  if (isLineUA()){
-    document.getElementById("line-banner").classList.add("show");
-  }
 } catch (e){
   console.warn("LINE 瀏覽器偵測初始化失敗（不影響其餘功能）：", e);
 }
