@@ -159,12 +159,6 @@
   }
   .option.selected-opt{border-color:var(--primary);background:var(--brand-light);}
   .option.selected-opt .tick{background:var(--primary);border-color:var(--primary);}
-  .option.none-opt{border-style:dashed;color:var(--ink-soft);font-weight:600;}
-  .option.none-opt.selected-opt{border-style:solid;color:var(--primary-dark);background:var(--brand-light);border-color:var(--primary);}
-  .option.none-opt.selected-opt .tick{background:var(--primary);border-color:var(--primary);}
-
-  .hint{margin:14px 0 0;color:#c0392b;font-size:clamp(13px,2.8vw,14px);font-weight:600;display:none;}
-  .hint.show{display:block;}
 
   /* ===== Buttons ===== */
   .actions{display:flex;gap:14px;margin-top:26px;justify-content:center;flex-wrap:wrap;}
@@ -351,11 +345,9 @@
       <div class="progress-track"><div class="progress-fill" id="d-progress"></div></div>
     </div>
 
-    <p class="step-guide"><span>👉請勾選以下符合你目前狀態的敘述（可複選）。如果都不符合，請改勾選「以上皆不符合」。</span></p>
+    <p class="step-guide"><span>👉請勾選以下符合你目前狀態的敘述（可複選）。</span></p>
 
     <div class="options" id="d-options"></div>
-
-    <p class="hint" id="d-hint">請至少勾選一項；若以上皆不符合，請勾選「以上皆不符合」再繼續。</p>
 
     <div class="actions">
       <button class="btn btn-ghost btn-nav" id="btn-prev">上一步</button>
@@ -658,7 +650,7 @@ const DOMAINS = [
 const state = {
   current: 0,
   user: null,
-  answers: DOMAINS.map(() => ({ picks: new Set(), none: false }))
+  answers: DOMAINS.map(() => ({ picks: new Set() }))
 };
 
 /* ============ Login gate (name / email) ============ */
@@ -717,7 +709,6 @@ const el = {
   step: document.getElementById("d-step"),
   progress: document.getElementById("d-progress"),
   options: document.getElementById("d-options"),
-  hint: document.getElementById("d-hint"),
   prev: document.getElementById("btn-prev"),
   next: document.getElementById("btn-next")
 };
@@ -742,7 +733,6 @@ function renderDomain(){
   el.subtitle.textContent = d.subtitle;
   el.step.textContent = "領域 " + (state.current + 1) + " / " + DOMAINS.length;
   el.progress.style.width = ((state.current + 1) / DOMAINS.length * 100) + "%";
-  el.hint.classList.remove("show");
   el.options.innerHTML = "";
 
   d.questions.forEach((q, i) => {
@@ -755,13 +745,6 @@ function renderDomain(){
     el.options.appendChild(opt);
   });
 
-  const noneOpt = document.createElement("button");
-  noneOpt.type = "button";
-  noneOpt.className = "option none-opt" + (ans.none ? " selected-opt" : "");
-  noneOpt.innerHTML = '<span class="tick">' + (ans.none ? "✓" : "") + '</span><span class="opt-text">以上皆不符合</span>';
-  noneOpt.addEventListener("click", toggleNone);
-  el.options.appendChild(noneOpt);
-
   el.prev.disabled = state.current === 0;
   el.next.textContent = state.current === DOMAINS.length - 1 ? "查看結果" : "下一步";
 }
@@ -769,18 +752,10 @@ function renderDomain(){
 function togglePick(i){
   const ans = state.answers[state.current];
   if (ans.picks.has(i)) ans.picks.delete(i);
-  else { ans.picks.add(i); ans.none = false; }
-  renderDomain();
-}
-function toggleNone(){
-  const ans = state.answers[state.current];
-  ans.none = !ans.none;
-  if (ans.none) ans.picks.clear();
+  else { ans.picks.add(i); }
   renderDomain();
 }
 function goNext(){
-  const ans = state.answers[state.current];
-  if (ans.picks.size === 0 && !ans.none){ el.hint.classList.add("show"); return; }
   if (state.current === DOMAINS.length - 1){ renderResult(); show("result"); }
   else { state.current++; renderDomain(); show("domain"); }
 }
@@ -819,7 +794,7 @@ function renderResult(opts){
     hint.style.display = "none";
     const empty = document.createElement("div");
     empty.className = "section-block";
-    empty.innerHTML = '<h3>本次沒有勾選任何情境</h3><p style="margin:0;">四個領域你都選擇了「以上皆不符合」。如果之後有任何情境開始符合你的狀態，歡迎再回來測一次，觀察自己的變化。</p>';
+    empty.innerHTML = '<h3>本次沒有勾選任何情境</h3><p style="margin:0;">四個領域你這次都沒有勾選任何敘述。如果之後有任何情境開始符合你的狀態，歡迎再回來測一次，觀察自己的變化。</p>';
     wrap.appendChild(empty);
     return;
   }
@@ -1055,7 +1030,7 @@ async function downloadReport(){
 function restart(){
   state.current = 0;
   state.user = null;
-  state.answers = DOMAINS.map(() => ({ picks: new Set(), none: false }));
+  state.answers = DOMAINS.map(() => ({ picks: new Set() }));
 
   const nameInput = document.getElementById("login-name");
   const emailInput = document.getElementById("login-email");
@@ -1113,7 +1088,7 @@ function encodeResultPayload(){
   const compact = {
     n: state.user.name,
     e: state.user.email,
-    a: state.answers.map(a => a.none ? "N" : [...a.picks].sort((x, y) => x - y).join(""))
+    a: state.answers.map(a => [...a.picks].sort((x, y) => x - y).join(""))
   };
   return encodeURIComponent(JSON.stringify(compact));
 }
@@ -1133,9 +1108,10 @@ function decodeResultPayloadFromHash(){
 function restoreFromSavedLink(compact){
   state.user = { name: compact.n, email: compact.e };
   state.answers = compact.a.map((code) => {
-    if (code === "N") return { picks: new Set(), none: true };
+    // "N" 是舊版「以上皆不符合」選項留下的編碼，該選項已移除，這裡僅為相容舊的分享連結，還原成空白作答
+    if (code === "N") return { picks: new Set() };
     const picks = new Set([...code].map((ch) => parseInt(ch, 10)));
-    return { picks, none: false };
+    return { picks };
   });
 }
 
