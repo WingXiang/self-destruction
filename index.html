@@ -160,6 +160,9 @@
   .option.selected-opt{border-color:var(--primary);background:var(--brand-light);}
   .option.selected-opt .tick{background:var(--primary);border-color:var(--primary);}
 
+  .hint{margin:14px 0 0;color:#c0392b;font-size:clamp(13px,2.8vw,14px);font-weight:600;display:none;}
+  .hint.show{display:block;}
+
   /* ===== Buttons ===== */
   .actions{display:flex;gap:14px;margin-top:26px;justify-content:center;flex-wrap:wrap;}
   .btn{
@@ -345,9 +348,11 @@
       <div class="progress-track"><div class="progress-fill" id="d-progress"></div></div>
     </div>
 
-    <p class="step-guide"><span>👉請勾選以下符合你目前狀態的敘述（可複選）。</span></p>
+    <p class="step-guide"><span>👉請勾選以下符合你目前狀態的敘述（可複選，至少勾選一項）。</span></p>
 
     <div class="options" id="d-options"></div>
+
+    <p class="hint" id="d-hint">請至少勾選一項再繼續。</p>
 
     <div class="actions">
       <button class="btn btn-ghost btn-nav" id="btn-prev">上一步</button>
@@ -709,6 +714,7 @@ const el = {
   step: document.getElementById("d-step"),
   progress: document.getElementById("d-progress"),
   options: document.getElementById("d-options"),
+  hint: document.getElementById("d-hint"),
   prev: document.getElementById("btn-prev"),
   next: document.getElementById("btn-next")
 };
@@ -733,6 +739,7 @@ function renderDomain(){
   el.subtitle.textContent = d.subtitle;
   el.step.textContent = "領域 " + (state.current + 1) + " / " + DOMAINS.length;
   el.progress.style.width = ((state.current + 1) / DOMAINS.length * 100) + "%";
+  el.hint.classList.remove("show");
   el.options.innerHTML = "";
 
   d.questions.forEach((q, i) => {
@@ -756,6 +763,8 @@ function togglePick(i){
   renderDomain();
 }
 function goNext(){
+  const ans = state.answers[state.current];
+  if (ans.picks.size === 0){ el.hint.classList.add("show"); return; }
   if (state.current === DOMAINS.length - 1){ renderResult(); show("result"); }
   else { state.current++; renderDomain(); show("domain"); }
 }
