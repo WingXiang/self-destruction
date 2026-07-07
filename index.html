@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>潛意識自我破壞程序測驗</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root{
+    --primary:#048BBA;
+    --primary-dark:#036f95;
+    --primary-deep:#024a63;
+    --brand-light:#E6F4F8;
+    --ink:#243b44;
+    --ink-soft:#4a626c;
+    --muted:#9aacb4;
+    --card:#ffffff;
+    --line:#d7e7ee;
+    --shadow:0 10px 30px rgba(4,139,186,.12);
+    --shadow-hover:0 16px 40px rgba(4,139,186,.22);
+    --radius:20px;
+    --logo:url("https://i.ibb.co/cXxp0DGB/logo-02.png");
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #f2fafd 0%, rgba(242,250,253,0) 60%),
+      linear-gradient(180deg,var(--brand-light) 0%, #f6fbfd 100%);
+    min-height:100vh;
+    line-height:1.85;
+    letter-spacing:.01em;
+    -webkit-font-smoothing:antialiased;
+    word-break:normal;
+    overflow-wrap:break-word;
+    line-break:strict;
+  }
+
+  /* 版面佔整體頁面約 75% */
+  .app{
+    width:75%;
+    max-width:1080px;
+    margin:0 auto;
+    padding:clamp(16px,4vw,40px) 0 24px;
+  }
+
+  /* ===== Card ===== */
+  .card{
+    position:relative;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:clamp(22px,5vw,44px);
+    padding-bottom:clamp(84px,10vw,104px);
+    overflow:hidden;
+  }
+  .card::after{
+    content:"";
+    position:absolute;
+    right:18px;
+    bottom:16px;
+    width:clamp(64px,12vw,84px);
+    height:clamp(64px,12vw,84px);
+    background:var(--logo) no-repeat center / contain;
+    opacity:.5;
+    pointer-events:none;
+    z-index:0;
+  }
+  .card > *{position:relative;z-index:1;}
+
+  /* ===== Typography ===== */
+  h1{
+    font-size:clamp(21px,4.6vw,29px);
+    line-height:1.5;
+    margin:0 0 20px;
+    color:var(--primary-dark);
+    letter-spacing:.02em;
+  }
+  h2{font-size:clamp(19px,4vw,24px);margin:0 0 6px;color:var(--primary-dark);}
+  .subtitle-en{font-size:clamp(12px,2.6vw,14px);color:var(--ink-soft);letter-spacing:.06em;margin:0 0 18px;}
+  p{margin:0 0 14px;}
+  .em-primary{color:var(--primary-dark);font-weight:700;}
+  .lead p{line-height:1.95;margin:0 0 15px;}
+  .lead p:last-child{margin-bottom:0;}
+  .final-reminder .lead p{color:var(--ink-soft);}
+
+  /* ===== Intro two-column layout (top) + note (bottom) ===== */
+  .intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:6px;}
+  .intro-col{background:#fbfdfe;border:1px solid var(--line);border-radius:16px;padding:20px clamp(16px,3vw,22px);}
+  .intro-col-title{display:flex;align-items:center;gap:9px;margin:0 0 14px;color:var(--primary-dark);font-size:clamp(15px,3.2vw,17px);font-weight:800;}
+  .intro-col-title::before{content:"";width:6px;height:18px;background:var(--primary);border-radius:3px;flex:0 0 auto;}
+
+  .note{
+    margin-top:20px;
+    background:var(--brand-light);
+    border-left:4px solid var(--primary);
+    border-radius:12px;
+    padding:14px 16px;
+    font-size:clamp(13px,2.8vw,15px);
+    color:var(--ink-soft);
+    line-height:1.8;
+    display:flex;gap:12px;align-items:flex-start;
+  }
+  .note .ic{font-size:20px;flex:0 0 auto;}
+  .note strong{color:var(--primary-dark);}
+
+  /* ===== Login gate (name / email) ===== */
+  .login-form{margin-top:20px;display:flex;flex-direction:column;gap:16px;}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field label{font-size:clamp(13px,2.8vw,14px);font-weight:700;color:var(--primary-dark);}
+  .field label .req{color:#c0392b;}
+  .text-input{width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:12px;font-size:clamp(14px,3vw,16px);font-family:inherit;color:var(--ink);background:#fff;transition:border-color .18s ease, box-shadow .18s ease;}
+  .text-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(4,139,186,.15);}
+  .text-input.invalid{border-color:#c0392b;}
+  .field-error{margin:0;font-size:clamp(12px,2.6vw,13px);color:#c0392b;font-weight:700;display:none;}
+  .field-error.show{display:block;}
+
+  /* Respondent name badge above result title */
+  .user-badge-wrap{text-align:center;}
+  .user-badge{display:inline-block;margin:0 0 14px;background:var(--brand-light);color:var(--primary-dark);font-weight:700;font-size:clamp(13px,2.8vw,14px);padding:8px 18px;border-radius:999px;}
+
+  /* ===== Badge chip ===== */
+  .badge{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:clamp(40px,9vw,52px);height:clamp(40px,9vw,52px);
+    border-radius:16px;
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;font-weight:800;font-size:clamp(18px,4vw,24px);
+    letter-spacing:.02em;box-shadow:0 6px 16px rgba(4,139,186,.28);flex:0 0 auto;
+  }
+  .domain-head{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+  .domain-head .titles{min-width:0;}
+  .domain-head h2{margin:0;}
+
+  /* ===== Progress ===== */
+  .progress-wrap{margin:20px 0 26px;}
+  .progress-label{display:flex;justify-content:space-between;font-size:clamp(12px,2.7vw,14px);color:var(--ink-soft);margin-bottom:8px;}
+  .progress-track{height:10px;background:var(--brand-light);border-radius:999px;overflow:hidden;}
+  .progress-fill{height:100%;width:25%;background:var(--primary);border-radius:999px;transition:width .45s cubic-bezier(.2,.7,.2,1);}
+
+  /* ===== Options ===== */
+  .options{display:flex;flex-direction:column;gap:12px;margin-top:6px;}
+  .option{
+    display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;
+    background:#fff;border:2px solid var(--line);border-radius:16px;padding:14px 16px;
+    font-size:clamp(14px,3vw,16px);color:var(--ink);line-height:1.7;cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+  }
+  .option:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover);border-color:var(--primary);}
+  .option .tick{
+    flex:0 0 auto;width:24px;height:24px;border-radius:8px;border:2px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;margin-top:1px;
+    transition:background .18s ease, border-color .18s ease;
+  }
+  .option.selected-opt{border-color:var(--primary);background:var(--brand-light);}
+  .option.selected-opt .tick{background:var(--primary);border-color:var(--primary);}
+  .option.none-opt{border-style:dashed;color:var(--ink-soft);font-weight:600;}
+  .option.none-opt.selected-opt{border-style:solid;color:var(--primary-dark);background:var(--brand-light);border-color:var(--primary);}
+  .option.none-opt.selected-opt .tick{background:var(--primary);border-color:var(--primary);}
+
+  .hint{margin:14px 0 0;color:#c0392b;font-size:clamp(13px,2.8vw,14px);font-weight:600;display:none;}
+  .hint.show{display:block;}
+
+  /* ===== Buttons ===== */
+  .actions{display:flex;gap:14px;margin-top:26px;justify-content:center;flex-wrap:wrap;}
+  .btn{
+    appearance:none;border:2px solid transparent;border-radius:14px;padding:14px 22px;
+    font-size:clamp(15px,3.2vw,17px);font-weight:700;font-family:inherit;cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease, background .18s ease;letter-spacing:.03em;
+    text-align:center;
+  }
+  .btn-nav{flex:0 1 190px;min-width:150px;max-width:220px;}
+  .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:0 8px 20px rgba(4,139,186,.30);}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover);}
+  .btn-ghost{background:#fff;color:var(--primary);border-color:var(--primary);}
+  .btn-ghost:hover{transform:translateY(-3px);box-shadow:var(--shadow);background:var(--brand-light);}
+  .btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none;}
+  .btn-block{width:100%;justify-content:center;}
+  .center{text-align:center;}
+
+  /* ===== Result ===== */
+  .section-block{margin-top:22px;padding:20px clamp(16px,4vw,24px);border-radius:16px;background:var(--brand-light);border:1px solid var(--line);}
+  .section-block h3{margin:0 0 12px;color:var(--primary-dark);font-size:clamp(17px,3.6vw,20px);}
+  .scale-list{list-style:none;margin:0;padding:0;}
+  .scale-list li{padding:8px 0;border-bottom:1px dashed var(--line);font-size:clamp(14px,3vw,15px);}
+  .scale-list li:last-child{border-bottom:0;}
+  .scale-list b{color:var(--primary-dark);}
+
+  /* Result block: two rows (top = 2 cells, bottom = 1) */
+  .result-block{margin-top:22px;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);background:#fff;}
+  .result-block.top{border:2px solid var(--primary-deep);}
+  .rb-head{display:flex;align-items:center;gap:12px;padding:14px 18px;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;flex-wrap:wrap;}
+  .result-block.top .rb-head{background:linear-gradient(135deg,var(--primary-dark),var(--primary-deep));}
+  .rb-head .badge{width:38px;height:38px;border-radius:11px;font-size:18px;background:rgba(255,255,255,.22);box-shadow:none;}
+  .rb-head .rb-name{font-weight:800;font-size:clamp(15px,3.2vw,18px);}
+  .rb-head .rb-score{font-weight:800;white-space:nowrap;}
+  .tag-top{background:#fff;color:var(--primary-deep);font-size:12px;font-weight:800;padding:3px 12px;border-radius:999px;letter-spacing:.04em;}
+  .rank-hint{margin:20px 0 0;font-size:clamp(13px,2.9vw,15px);color:var(--ink-soft);background:#fff;border:1px solid var(--line);border-left:4px solid var(--primary);border-radius:12px;padding:12px 14px;line-height:1.7;}
+  .rb-head{cursor:pointer;user-select:none;}
+  .rb-meta{margin-left:auto;display:flex;align-items:center;gap:12px;}
+  .rb-chevron{transition:transform .25s ease;font-size:16px;line-height:1;}
+  .result-block.collapsed .rb-content{display:none;}
+  .result-block.collapsed .rb-chevron{transform:rotate(-90deg);}
+
+  /* Explicit step-by-step guidance, shown on every screen */
+  .step-guide{display:flex;gap:10px;align-items:flex-start;background:var(--brand-light);border:1px dashed var(--primary);border-radius:12px;padding:12px 14px;margin:18px 0 0;font-size:clamp(13px,2.8vw,15px);color:var(--primary-dark);font-weight:700;line-height:1.75;}
+  .step-guide .ic{flex:0 0 auto;font-size:18px;}
+
+  .rb-top{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+  .rb-cell{padding:18px clamp(14px,3vw,20px);}
+  .rb-answers{background:var(--brand-light);border-right:1px solid var(--line);}
+  .rb-cell h4{margin:0 0 12px;font-size:clamp(14px,3vw,16px);color:var(--primary-dark);letter-spacing:.02em;}
+  .result-block.top .rb-status h4{color:var(--primary-deep);}
+  .answer-list{list-style:none;margin:0;padding:0;}
+  .answer-list li{display:flex;gap:10px;align-items:flex-start;margin-bottom:11px;font-size:clamp(13px,2.9vw,15px);line-height:1.7;}
+  .answer-list li .mk{flex:0 0 auto;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;margin-top:1px;}
+  .answer-list li.checked .mk{background:var(--primary);color:#fff;}
+  .answer-list li.checked{color:var(--ink);font-weight:600;}
+  .answer-list li.unchecked .mk{background:#eef2f4;color:var(--muted);}
+  .answer-list li.unchecked{color:var(--muted);}
+
+  .rb-status{font-size:clamp(13px,2.9vw,15px);}
+  .rb-status .prog-title{margin:0 0 12px;color:var(--primary-dark);font-size:clamp(15px,3.2vw,18px);line-height:1.6;font-weight:800;}
+  .rb-status p{margin:0 0 12px;line-height:1.8;}
+  .rb-status ul{margin:0 0 14px;padding-left:20px;}
+  .rb-status li{margin-bottom:7px;line-height:1.75;}
+
+  .rb-bottom{border-top:1px solid var(--line);padding:20px clamp(16px,4vw,24px);font-size:clamp(13px,2.9vw,15px);}
+  .rb-bottom .practice-title{margin:0 0 14px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-dark));padding:12px 16px;border-radius:12px;font-size:clamp(14px,3vw,16px);}
+  .result-block.top .rb-bottom .practice-title{background:linear-gradient(135deg,var(--primary-dark),var(--primary-deep));}
+  .rb-bottom p{margin:0 0 12px;line-height:1.85;}
+  .rb-bottom ul{margin:0 0 14px;padding-left:20px;}
+  .rb-bottom li{margin-bottom:7px;line-height:1.75;}
+  .rb-bottom strong{color:var(--primary-dark);}
+
+  /* Final reminder */
+  .final-reminder{margin-top:26px;padding:24px clamp(18px,4vw,28px);border-radius:18px;background:linear-gradient(180deg,#f4fbfd,#eef7fa);border:1px solid var(--line);}
+  .final-reminder h3{color:var(--primary-dark);margin:0 0 16px;font-size:clamp(18px,3.8vw,22px);}
+
+  /* CTA */
+  .cta{margin-top:26px;padding:26px clamp(18px,4vw,30px);border-radius:18px;text-align:center;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;box-shadow:var(--shadow-hover);}
+  .cta h3{color:#fff;margin-top:0;font-size:clamp(18px,3.8vw,22px);}
+  .cta p{color:rgba(255,255,255,.92);line-height:1.9;}
+  .cta .btn-cta{display:inline-block;margin-top:8px;background:#fff;color:var(--primary-dark);text-decoration:none;padding:15px 34px;border-radius:999px;font-weight:800;font-size:clamp(15px,3.2vw,17px);box-shadow:0 8px 20px rgba(0,0,0,.18);transition:transform .18s ease, box-shadow .18s ease;}
+  .cta .btn-cta:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.28);}
+
+  /* Action row — social + restart, solid brand colours, equal widths, wrap to 1×n when narrow */
+  .action-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:22px;}
+  .act{display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;font-weight:700;font-size:clamp(14px,3vw,16px);padding:14px 20px;border-radius:14px;color:#fff;border:none;cursor:pointer;font-family:inherit;letter-spacing:.02em;transition:transform .18s ease, box-shadow .18s ease;box-shadow:var(--shadow);flex:1 1 220px;max-width:320px;}
+  .act:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover);}
+  .act.fb{background:#1877F2;}
+  .act.ig{background:#E4405F;}
+  .act.restart{background:var(--primary-dark);}
+  .act svg{width:22px;height:22px;fill:#fff;flex:0 0 auto;}
+
+  .dl-wrap{text-align:center;margin-top:26px;}
+  .dl-note{margin:10px 0 0;font-size:clamp(11px,2.5vw,13px);color:var(--ink-soft);}
+
+  /* Prominent red warning about in-app browsers not supporting downloads */
+  .warn-note{margin-top:20px;background:#fdecea;border:1px solid #f5c6c3;border-left:4px solid #dc3545;border-radius:10px;padding:14px 16px;font-size:clamp(13px,2.8vw,15px);color:#8a1f1f;font-weight:700;line-height:1.8;display:flex;gap:12px;align-items:flex-start;}
+  .warn-note .ic{font-size:20px;flex:0 0 auto;}
+
+  /* Shown only when opened inside LINE's in-app browser (external links may not open otherwise) */
+  .line-banner{display:none;margin-top:26px;background:#fff7e6;border:1px solid #f0d9a6;border-left:4px solid #c68a13;border-radius:12px;padding:14px 16px;font-size:clamp(13px,2.8vw,15px);color:#7a5510;line-height:1.8;gap:12px;align-items:flex-start;}
+  .line-banner.show{display:flex;}
+  .line-banner .ic{font-size:20px;flex:0 0 auto;}
+
+  /* Copyright — bottom center of every page */
+  .copyright{text-align:center;color:var(--ink-soft);font-size:13px;letter-spacing:.04em;padding:22px 12px 8px;line-height:1.8;}
+  .copyright a{color:var(--primary);text-decoration:none;font-weight:700;}
+  .copyright a:hover{text-decoration:underline;}
+
+  /* ===== Responsive ===== */
+  @media (max-width:1024px){ .app{width:85%;} }
+  @media (max-width:640px){
+    .app{width:92%;}
+    .intro-grid{grid-template-columns:1fr;}
+    .rb-top{grid-template-columns:1fr;}
+    .rb-answers{border-right:0;border-bottom:1px solid var(--line);}
+    .btn-nav{flex:1 1 140px;}
+    .act{flex:1 1 100%;max-width:none;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ SCREEN: INTRO ============ -->
+  <section id="screen-intro" class="card">
+    <h1 class="center">潛意識自我破壞程序測驗</h1>
+    <div class="intro-grid">
+      <div class="intro-col">
+        <h3 class="intro-col-title">測驗說明</h3>
+        <div class="lead">
+          <p>很多人不是不努力，也不是能力不夠。<br>而是潛意識裡，藏著一些我們沒有察覺的「自我破壞程序」。</p>
+          <p>它們像背景裡偷偷運作的程式碼<br>在你快要成功、快要被愛、快要穩定、快要變好的時候<br>突然啟動，把你拉回原本熟悉的位置。</p>
+        </div>
+      </div>
+      <div class="intro-col">
+        <h3 class="intro-col-title">注意事項</h3>
+        <div class="lead">
+          <p>這份測驗會幫助你看見：<br><span class="em-primary">你目前最容易在哪一個領域，啟動自我破壞程序。</span></p>
+          <p>請給自己 3 分鐘，安靜閱讀以下 20 個情境。</p>
+          <p>只要你直覺覺得：「這句話常常發生在我身上」或「這很像我最近的狀態」，請在該題打勾 ✓。</p>
+          <p>不用想太久，直覺的答案，通常就是潛意識最真實的底層邏輯。</p>
+        </div>
+      </div>
+    </div>
+    <div class="note">
+      <div><strong>🌸溫馨提醒：</strong>這份測驗是自我覺察工具，並非心理診斷。如果你長期感到強烈焦慮、憂鬱或身心失衡，建議同時尋求專業心理或醫療協助。</div>
+    </div>
+    <p class="step-guide"><span>👉準備好了嗎？請填寫下方資料後點擊「開始測驗」<br>接下來會依序出現四大領域，每個領域勾選符合你狀態的敘述即可<br>最後就能看到你的專屬結果。</span></p>
+
+    <div class="login-form">
+      <div class="field">
+        <label for="login-name">姓名或暱稱 <span class="req">*</span></label>
+        <input type="text" id="login-name" class="text-input" placeholder="請輸入你的姓名或暱稱" />
+        <p class="field-error" id="login-name-error"></p>
+      </div>
+      <div class="field">
+        <label for="login-email">E-mail <span class="req">*</span></label>
+        <input type="email" id="login-email" class="text-input" placeholder="請輸入你的 Email" />
+        <p class="field-error" id="login-email-error"></p>
+      </div>
+    </div>
+
+    <div class="warn-note">
+      <div>⚠️請注意：如使用的內建瀏覽器無法下載報告, 請直接使用手機截圖</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary btn-block" id="btn-start">開始測驗</button>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN: DOMAIN ============ -->
+  <section id="screen-domain" class="card" style="display:none;">
+    <div class="domain-head">
+      <span class="badge" id="d-badge">A</span>
+      <div class="titles">
+        <h2 id="d-title">領域一：金錢與事業</h2>
+        <div class="subtitle-en" id="d-subtitle" style="margin:0;">Wealth &amp; Career</div>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="d-step">領域 1 / 4</span>
+        <span>直覺勾選，符合自己的敘述</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="d-progress"></div></div>
+    </div>
+
+    <p class="step-guide"><span>👉請勾選以下符合你目前狀態的敘述（可複選）。如果都不符合，請改勾選「以上皆不符合」。</span></p>
+
+    <div class="options" id="d-options"></div>
+
+    <p class="hint" id="d-hint">請至少勾選一項；若以上皆不符合，請勾選「以上皆不符合」再繼續。</p>
+
+    <div class="actions">
+      <button class="btn btn-ghost btn-nav" id="btn-prev">上一步</button>
+      <button class="btn btn-primary btn-nav" id="btn-next">下一步</button>
+    </div>
+  </section>
+
+  <!-- ============ SCREEN: RESULT ============ -->
+  <section id="screen-result" class="card" style="display:none;">
+    <div class="user-badge-wrap"><span class="user-badge">填答者：<span id="user-badge-name"></span></span></div>
+    <h1 class="center">你的測驗結果</h1>
+    <p class="step-guide"><span class="ic">👉</span><span>操作方式：點擊下方各領域卡片標題可展開查看詳細建議<br> → 最後點擊「一次下載 4 張圖片」把結果存到你的裝置。</span></p>
+
+    <div id="result-capture">
+      <div class="section-block">
+        <h3>📊 計分方式</h3>
+        <p>請分別計算你在 A、B、C、D 四個領域中，各勾選了幾題。每個領域滿分 5 分。</p>
+        <ul class="scale-list">
+          <li><b>0–1 分</b>：目前影響較低</li>
+          <li><b>2 分</b>：已有隱性影響，值得開始覺察</li>
+          <li><b>3–4 分</b>：這是你目前主要的自我破壞模式</li>
+          <li><b>5 分</b>：這個程序正在高度運作，建議優先校準</li>
+        </ul>
+        <p style="margin-top:12px;">如果有兩個以上領域同分，代表它們可能正在互相影響。例如：金錢卡住，背後可能是自我價值不穩；關係失衡，可能也會消耗你的能量與執行力。</p>
+        <p class="em-primary">請先從分數最高的領域開始練習。</p>
+      </div>
+
+      <p class="rank-hint" id="rank-hint" style="display:none;">📉 以下依「領域一～四」順序呈現<br>標註<b>「分數最高」</b>的領域代表目前對你影響最大，建議優先校準。<br>點擊每個標題即可展開或收合內容。</p>
+      <div id="r-blocks"></div>
+    </div>
+
+    <div class="dl-wrap">
+      <button class="btn btn-primary" id="btn-download">一次下載 4 張圖片</button>
+      <p class="dl-note">會依序下載 4 張獨立圖片（非壓縮檔）。iOS 裝置會改在新分頁開啟圖片，請長按圖片選擇「儲存到照片」。</p>
+      <div class="warn-note">
+        <div>⚠️請注意：如使用的內建瀏覽器無法下載報告, 請直接使用手機截圖</div>
+      </div>
+    </div>
+
+    <div class="final-reminder">
+      <h3>🌿 最後提醒</h3>
+      <div class="lead">
+        <p>你測出來的結果，是提醒你看見：<br>原來很多卡住，不是因為你不夠努力，<br>而是你一直用舊的底層設定，在面對新的人生階段。</p>
+        <p>自我破壞程序不是你的敵人。<br>它曾經可能是為了保護你，只是現在，它已經不適合再掌控你的人生。</p>
+        <p>當你願意看見它，你就已經開始鬆動它。</p>
+        <p>真正的改變，不是逼自己變成另一個人。<br>而是重新校準你的潛意識，讓你的行動、關係、金錢與能量，回到真正適合你的運作方式。</p>
+        <p>你不是壞掉了。你只是需要更新內在程式。</p>
+        <p>從今天開始，請選擇一個最有感的領域，連續練習 7 天。</p>
+        <p>你會慢慢發現：<br>當底層設定改變，人生就不需要再用耗盡自己的方式前進。</p>
+        <p>如果你發現自己不是第一次卡在這裡，<br>而是反覆出現相似的狀況，<br>那就代表：<span class="em-primary">這個模式，值得被更深入看見。</span></p>
+      </div>
+    </div>
+
+    <div class="line-banner" id="line-banner">
+      <span class="ic">📲</span>
+      <div>偵測到您可能正在使用 LINE 內建瀏覽器。若想在手機的瀏覽器（而非停留在 LINE 內）開啟「預約表單」或社群連結，請點擊畫面右上角「⋮」或「···」選單，選擇「在瀏覽器中開啟」。</div>
+    </div>
+
+    <div class="cta">
+      <h3>✨ 預約潛意識信念校準諮詢</h3>
+      <p>歡迎填寫表單，預約每月限量 3 場的潛意識信念校準諮詢。</p>
+      <p>我會陪你一起深入探索目前最影響你的自我破壞程序，重新校準成支持你前進的力量。</p>
+      <p style="margin-bottom:16px;">你不需要更用力，你需要的是換一套更適合現在自己的內在設定。</p>
+      <a class="btn-cta" href="https://forms.gle/CtouUvrLKeAV8z258" target="_blank" rel="noopener">立即填寫預約表單</a>
+    </div>
+
+    <div class="action-row">
+      <a class="act fb" href="https://www.facebook.com/Linda.hsyh" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.9h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94z"/></svg>
+        關注 Linda 的 Facebook
+      </a>
+      <a class="act ig" href="https://www.instagram.com/linda_hsyh" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.31-1.46.72-2.12 1.38C1.36 2.67.95 3.34.63 4.13.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.38 2.12.66.66 1.33 1.07 2.12 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.86 5.86 0 0 0 2.12-1.38 5.86 5.86 0 0 0 1.38-2.12c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.86 5.86 0 0 0-1.38-2.12A5.86 5.86 0 0 0 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84zm0 10.16A4 4 0 1 1 16 12a4 4 0 0 1-4 4zm7.85-10.4a1.44 1.44 0 1 1-1.44-1.44 1.44 1.44 0 0 1 1.44 1.44z"/></svg>
+        關注 Linda 的 Instagram
+      </a>
+      <button class="act restart" id="btn-restart">重新測驗</button>
+    </div>
+  </section>
+
+  <!-- Copyright shown at bottom-center of every page -->
+  <footer class="copyright">此題目設計、資訊來源、版權所有皆屬於 <a href="https://www.facebook.com/Linda.hsyh" target="_blank" rel="noopener">「Linda 洋溢人生潛意識信念專家」</a> 所有</footer>
+
+</div>
+
+<!-- 隱藏 iframe：作為背景送出測驗結果表單的提交目標，避免頁面跳轉 -->
+<iframe name="gas-submit-frame" style="display:none;" title="background-submit"></iframe>
+
+<script>
+/* ============ Data ============ */
+const DOMAINS = [
+  {
+    key:"A", title:"領域一：金錢與事業", short:"金錢與事業", subtitle:"Wealth & Career",
+    questions:[
+      "就算賺到錢、拿到成果或被肯定，我也很難真的安心，總覺得這一切可能隨時失去。",
+      "我常覺得，必須非常辛苦、撐到很累，才配得到收入、成功或豐盛。",
+      "當我要提高收費、談合作、接高價值機會時，會下意識心虛，覺得「我是不是不值得」。",
+      "我常把時間花在低價值的瑣事上，卻遲遲不敢推進真正能帶來突破的關鍵行動。",
+      "每當事業快要進入下一個階段時，就容易出現意外、生病、糾紛、拖延或其他事情打斷進度。"
+    ],
+    status:`
+      <div class="prog-title">你正在啟動「匱乏與勞碌」的自我破壞程序</div>
+      <p>你的潛意識可能安裝了這樣的底層設定：</p>
+      <ul>
+        <li>「我不能輕鬆得到。」</li>
+        <li>「我必須很辛苦，才配成功。」</li>
+        <li>「如果我收太高，別人會不喜歡我。」</li>
+        <li>「錢來得太快，可能會失去。」</li>
+      </ul>
+      <p>所以你明明有能力，卻容易把自己困在低價值的忙碌裡。</p>
+      <p>你不是不會賺錢，而是你的潛意識可能不允許你用更輕鬆、更高槓桿的方式創造財富。</p>
+      <p>這個程序會讓你：</p>
+      <ul>
+        <li>一直忙，但不一定有成果。</li>
+        <li>一直付出，但不敢提高價值。</li>
+        <li>一直做瑣事，卻避開真正能帶來收入的關鍵行動。</li>
+      </ul>
+    `,
+    exercise:`
+      <div class="practice-title">✨ 破除代碼練習：財富小目標校準</div>
+      <p>請選擇一個近期在財富或事業上「可以達成」的小目標。</p>
+      <p>例如：</p>
+      <ul>
+        <li>我這週可以收到一筆新訂單。</li>
+        <li>我這個月可以多增加 10,000 元收入。</li>
+        <li>我可以完成一次報價。</li>
+        <li>我可以邀約 3 位適合的客戶。</li>
+        <li>我可以把某個服務整理成清楚方案。</li>
+      </ul>
+      <p>請把句子寫成：</p>
+      <p><strong>「我可以輕鬆達成＿＿＿＿。」</strong></p>
+      <p>例如：</p>
+      <ul>
+        <li>「我可以輕鬆達成這週邀約 3 位適合客戶。」</li>
+        <li>「我可以輕鬆達成本月增加 10,000 元收入。」</li>
+        <li>「我可以輕鬆完成一次清楚而有底氣的報價。」</li>
+      </ul>
+      <p>接下來連續 7 天，在睡前與剛起床時，各唸 7 次。</p>
+      <p>請唸出聲音，讓自己的耳朵聽到。</p>
+      <p>唸完後，請問自己一個問題：</p>
+      <p><strong>「今天哪一個行動，最有可能幫助我創造這個目標？」</strong></p>
+      <p>然後只做那一件最重要的事。</p>
+      <p>這個練習的重點不是催眠自己變有錢，而是讓你的大腦開始習慣：</p>
+      <p>我可以不用靠耗盡自己，也能穩定創造價值與收入。</p>
+    `
+  },
+  {
+    key:"B", title:"領域二：關係與合作", short:"關係與合作", subtitle:"Relationships & Boundaries",
+    questions:[
+      "在關係裡，我常覺得自己需要一直付出、妥協或證明自己，才能維持連結。",
+      "我很害怕衝突，寧願委屈自己，也不敢清楚表達自己的界線與真實感受。",
+      "不管是感情、朋友或工作合作，我常吸引到需要我照顧、提醒、收拾爛攤子的人。",
+      "當別人對我太好、關係太順利或太靠近時，我反而會焦慮，甚至下意識想推開對方。",
+      "我常有一種感覺：好像沒有人能真正理解我、接納最真實的我。"
+    ],
+    status:`
+      <div class="prog-title">你正在啟動「界線失守與過度承擔」的自我破壞程序</div>
+      <p>你的潛意識可能很害怕：</p>
+      <ul>
+        <li>被拒絕。</li>
+        <li>被討厭。</li>
+        <li>被拋下。</li>
+        <li>讓別人失望。</li>
+        <li>關係因此破裂。</li>
+      </ul>
+      <p>所以你在關係中容易過度承擔。</p>
+      <p>明明心裡已經不舒服，卻還是說「沒關係」。</p>
+      <p>明明知道對方越界了，卻還是替對方找理由。</p>
+      <p>這個程序會讓你吸引到需要被照顧、被提醒、被拯救的人。</p>
+      <p>最後你會發現，自己在關係和合作裡越來越累，卻又不好意思離開。</p>
+      <p>你不是沒有愛人的能力。</p>
+      <p>你只是需要學會：真正健康的關係，不是靠委屈自己來維持。</p>
+    `,
+    exercise:`
+      <div class="practice-title">✨ 破除代碼練習：NoNo 界線清單</div>
+      <p>請拿出一張紙，寫下你的「NoNo 清單」。</p>
+      <p>題目是：</p>
+      <p><strong>「哪些事情，是我不能再為了維持關係而勉強自己的？」</strong></p>
+      <p>請至少寫下 5 個。</p>
+      <p>例如：</p>
+      <ul>
+        <li>我不能再答應臨時又不合理的要求。</li>
+        <li>我不能再免費提供超出範圍的服務。</li>
+        <li>我不能再為了怕對方失望，就答應自己不想做的事。</li>
+        <li>我不能再替不願意負責的人收拾爛攤子。</li>
+        <li>我不能再明明很累，還假裝自己可以。</li>
+      </ul>
+      <p>寫完後，請用一個更長遠的角度問自己：</p>
+      <p><strong>「這件事，我可以對任何人持續做 5 年、10 年、20 年嗎？」</strong></p>
+      <p>如果答案是不行，代表這不是愛，也不是善良，而是你正在犧牲自己。</p>
+      <p>接下來，請選擇其中一件最小的事情，練習第一次 Say No。</p>
+      <p>你可以這樣說：</p>
+      <ul>
+        <li>「這件事我目前沒有辦法答應。」</li>
+        <li>「我需要先確認自己的狀態，再回覆你。」</li>
+        <li>「這已經超出我原本能承擔的範圍。」</li>
+        <li>「我理解你的需要，但這次我不能接。」</li>
+      </ul>
+      <p>這個練習的重點不是變冷漠，而是讓你的潛意識知道：</p>
+      <p>我可以有界線，關係也不一定會消失。</p>
+    `
+  },
+  {
+    key:"C", title:"領域三：自我價值與內在穩定", short:"自我價值與內在穩定", subtitle:"Self-Worth & Inner Stability",
+    questions:[
+      "我常常陷入處理情緒的循環，心情一直在整理，但事情卻沒有往前推進。",
+      "只要別人給我一點批評、否定，甚至只是建議，我就容易開始懷疑自己。",
+      "我的腦中常有一個批判的聲音，不斷提醒我：「你還不夠好」、「你做不到」。",
+      "我很難讓自己真正休息，一停下來就會焦慮，覺得自己是不是不夠努力。",
+      "我很容易把別人的情緒當成自己的責任，對方不開心時，我會下意識內疚。"
+    ],
+    status:`
+      <div class="prog-title">你正在啟動「情緒內耗與自我懷疑」的自我破壞程序</div>
+      <p>你的潛意識可能很容易把外界的一句話、一個眼神、一個反應，解讀成對自己的否定。</p>
+      <p>所以你常常花很多時間在處理心情：</p>
+      <ul>
+        <li>想知道自己是不是做錯了。</li>
+        <li>想知道別人是不是不喜歡你。</li>
+        <li>想知道是不是自己不夠好。</li>
+      </ul>
+      <p>但當你一直在處理情緒，事情就會停住。</p>
+      <p>目標停住，行動停住，信任自己也停住。</p>
+      <p>這個程序會讓你誤以為：</p>
+      <ul>
+        <li>我要先完全不焦慮，才能行動。</li>
+        <li>我要先完全有自信，才能開始。</li>
+        <li>我要先把所有情緒處理好，才能往前走。</li>
+      </ul>
+      <p>但真正的穩定不是沒有情緒，而是你有情緒的時候，仍然可以把自己帶回來。</p>
+    `,
+    exercise:`
+      <div class="practice-title">✨ 破除代碼練習：換空間情緒校準</div>
+      <p>當你發現自己陷入自我懷疑、委屈、焦慮或內耗時，請不要急著分析原因，也不要一直追問自己「為什麼我又這樣」。</p>
+      <p><strong>第一步：先離開原本的空間。</strong></p>
+      <p>如果你在房間，就走到客廳。</p>
+      <p>如果你在辦公室，就去洗手間或戶外。</p>
+      <p>如果可以，請到外面走 5–10 分鐘。</p>
+      <p><strong>第二步：走路時，請把注意力放回身體。</strong></p>
+      <p>你可以問自己：</p>
+      <ul>
+        <li>「我現在的腳踩在地上的感覺是什麼？」</li>
+        <li>「我現在呼吸有沒有變淺？」</li>
+        <li>「我現在肩膀是不是很緊？」</li>
+        <li>「我現在最需要的是什麼？」</li>
+      </ul>
+      <p><strong>第三步：回來後，只寫下三句話：</strong></p>
+      <ul>
+        <li>我現在感受到的是：＿＿＿＿。</li>
+        <li>這個情緒想提醒我：＿＿＿＿。</li>
+        <li>我接下來可以做的一個小行動是：＿＿＿＿。</li>
+      </ul>
+      <p>這個練習的重點是：先轉換環境，再轉換狀態。</p>
+      <p>因為很多時候，你不是想不通，而是你的身體還卡在原本的情緒場裡。</p>
+      <p>你不需要把情緒一次處理完。你只需要先把自己從情緒裡帶回來。</p>
+    `
+  },
+  {
+    key:"D", title:"領域四：能量與執行力", short:"能量與執行力", subtitle:"Energy & Execution",
+    questions:[
+      "我明明知道該做什麼才能改變現狀，但就是卡在開始之前，關鍵時刻容易自我癱瘓。",
+      "我的身體常感覺緊繃、疲憊、像在漏電，即使睡了覺也沒有真正充到電。",
+      "面對重要決策時，我容易腦袋空白，不知道自己到底想要什麼，也很難相信自己的判斷。",
+      "我常用滑手機、過度進食、盲目購物、追劇或忙雜事，來逃避真正需要面對的壓力。",
+      "我常覺得自己的能量很分散，事情很多、方向很多，但真正重要的事一直沒有被完成。"
+    ],
+    status:`
+      <div class="prog-title">你正在啟動「能量渙散與自我癱瘓」的自我破壞程序</div>
+      <p>你的潛意識可能不是不知道該做什麼，而是同時接收了太多訊息、太多期待、太多方向。</p>
+      <p>所以你看似很忙，卻很難真正前進。</p>
+      <p>你可能一直在準備、學習、整理、規劃，但最重要的那一步，始終沒有跨出去。</p>
+      <p>這個程序會讓你：</p>
+      <ul>
+        <li>知道很多，但做得很少。</li>
+        <li>想法很多，但行動分散。</li>
+        <li>事情很多，但核心目標模糊。</li>
+        <li>身體很累，但腦袋停不下來。</li>
+      </ul>
+      <p>你不是沒有執行力，而是你的能量需要被重新收回來。</p>
+    `,
+    exercise:`
+      <div class="practice-title">✨ 破除代碼練習：一日一核心行動</div>
+      <p>請每天早上問自己一個問題：</p>
+      <p><strong>「如果今天只能完成一件事，哪一件事完成後，我會覺得人生有往前一點？」</strong></p>
+      <p>請把那件事寫下來。</p>
+      <p>它不需要很大，但必須跟你的核心目標有關。</p>
+      <p>例如：</p>
+      <ul>
+        <li>完成一則邀約訊息。</li>
+        <li>整理一個服務方案。</li>
+        <li>回覆一位重要客戶。</li>
+        <li>完成一頁簡報。</li>
+        <li>錄一支短影音。</li>
+        <li>完成一個報價。</li>
+        <li>安排一次合作洽談。</li>
+      </ul>
+      <p>接著，請在開始滑手機、回訊息、處理雜事之前，先做這件事或相關的小步驟 5 分鐘。</p>
+      <p>只做 5 分鐘就好。（習慣後增加到 10、15…… 分鐘）</p>
+      <p>做完後，請對自己說：</p>
+      <p><strong>「我正在把能量收回來，放在真正重要的地方。」</strong></p>
+      <p>這個練習的重點不是逼自己變得更自律，而是訓練你的大腦重新分辨：</p>
+      <p>什麼是忙碌，什麼是推進。</p>
+      <p>當你每天都完成一個核心行動，你的潛意識會慢慢相信：</p>
+      <p>我不是卡住的人，我是可以前進的人。</p>
+    `
+  }
+];
+
+/* ============ State ============ */
+const state = {
+  current: 0,
+  user: null,
+  answers: DOMAINS.map(() => ({ picks: new Set(), none: false }))
+};
+
+/* ============ Login gate (name / email) ============ */
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function showFieldError(input, errorEl, message){
+  errorEl.textContent = "⚠️ " + message;
+  errorEl.classList.add("show");
+  input.classList.add("invalid");
+  input.focus();
+  input.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+function clearFieldError(input, errorEl){
+  errorEl.classList.remove("show");
+  errorEl.textContent = "";
+  input.classList.remove("invalid");
+}
+
+function validateLoginAndStart(){
+  const nameInput = document.getElementById("login-name");
+  const emailInput = document.getElementById("login-email");
+  const nameError = document.getElementById("login-name-error");
+  const emailError = document.getElementById("login-email-error");
+
+  const name = nameInput.value.trim();
+  const email = emailInput.value.trim();
+
+  clearFieldError(nameInput, nameError);
+  clearFieldError(emailInput, emailError);
+
+  if (!name){
+    showFieldError(nameInput, nameError, "請輸入您的姓名或暱稱！");
+    return;
+  }
+  if (!EMAIL_RE.test(email)){
+    showFieldError(emailInput, emailError, "請輸入正確格式的 E-mail！");
+    return;
+  }
+
+  state.user = { name, email };
+  state.current = 0;
+  renderDomain();
+  show("domain");
+}
+
+/* ============ Elements ============ */
+const screens = {
+  intro: document.getElementById("screen-intro"),
+  domain: document.getElementById("screen-domain"),
+  result: document.getElementById("screen-result")
+};
+const el = {
+  badge: document.getElementById("d-badge"),
+  title: document.getElementById("d-title"),
+  subtitle: document.getElementById("d-subtitle"),
+  step: document.getElementById("d-step"),
+  progress: document.getElementById("d-progress"),
+  options: document.getElementById("d-options"),
+  hint: document.getElementById("d-hint"),
+  prev: document.getElementById("btn-prev"),
+  next: document.getElementById("btn-next")
+};
+
+/* ============ Navigation ============ */
+function show(name, opts){
+  opts = opts || {};
+  Object.values(screens).forEach(s => s.style.display = "none");
+  screens[name].style.display = "block";
+  window.scrollTo(0, 0);
+  if (!opts.skipHistory){
+    pushScreenState(name, state.current);
+  }
+}
+
+function renderDomain(){
+  const d = DOMAINS[state.current];
+  const ans = state.answers[state.current];
+
+  el.badge.textContent = d.key;
+  el.title.textContent = d.title;
+  el.subtitle.textContent = d.subtitle;
+  el.step.textContent = "領域 " + (state.current + 1) + " / " + DOMAINS.length;
+  el.progress.style.width = ((state.current + 1) / DOMAINS.length * 100) + "%";
+  el.hint.classList.remove("show");
+  el.options.innerHTML = "";
+
+  d.questions.forEach((q, i) => {
+    const selected = ans.picks.has(i);
+    const opt = document.createElement("button");
+    opt.type = "button";
+    opt.className = "option" + (selected ? " selected-opt" : "");
+    opt.innerHTML = '<span class="tick">' + (selected ? "✓" : "") + '</span><span class="opt-text">' + q + "</span>";
+    opt.addEventListener("click", () => togglePick(i));
+    el.options.appendChild(opt);
+  });
+
+  const noneOpt = document.createElement("button");
+  noneOpt.type = "button";
+  noneOpt.className = "option none-opt" + (ans.none ? " selected-opt" : "");
+  noneOpt.innerHTML = '<span class="tick">' + (ans.none ? "✓" : "") + '</span><span class="opt-text">以上皆不符合</span>';
+  noneOpt.addEventListener("click", toggleNone);
+  el.options.appendChild(noneOpt);
+
+  el.prev.disabled = state.current === 0;
+  el.next.textContent = state.current === DOMAINS.length - 1 ? "查看結果" : "下一步";
+}
+
+function togglePick(i){
+  const ans = state.answers[state.current];
+  if (ans.picks.has(i)) ans.picks.delete(i);
+  else { ans.picks.add(i); ans.none = false; }
+  renderDomain();
+}
+function toggleNone(){
+  const ans = state.answers[state.current];
+  ans.none = !ans.none;
+  if (ans.none) ans.picks.clear();
+  renderDomain();
+}
+function goNext(){
+  const ans = state.answers[state.current];
+  if (ans.picks.size === 0 && !ans.none){ el.hint.classList.add("show"); return; }
+  if (state.current === DOMAINS.length - 1){ renderResult(); show("result"); }
+  else { state.current++; renderDomain(); show("domain"); }
+}
+function goPrev(){
+  if (state.current > 0){ state.current--; renderDomain(); show("domain"); }
+}
+
+/* ============ Result ============ */
+function renderResult(opts){
+  opts = opts || {};
+  const nameEl = document.getElementById("user-badge-name");
+  if (nameEl) nameEl.textContent = state.user ? state.user.name : "";
+
+  if (!opts.skipSubmit){
+    submitResultsToBackend(); // 進入結果頁時，於背景自動送出（不阻塞畫面渲染，也不影響使用者體驗）
+  }
+
+  // 自動把目前結果編碼進網址 hash（取代原本要使用者手動按「儲存連結」的做法）：
+  // 如此重新整理、或稍後從瀏覽器紀錄／分頁重新開啟同一頁，都會直接回到這份結果，而非回到開頭說明。
+  if (state.user){
+    syncResultHash();
+  }
+
+  // 固定依領域 1–4（A→D）順序呈現，不依分數排序；分數最高的領域另外標註
+  const info = DOMAINS.map((d, idx) => ({
+    d, idx, score: state.answers[idx].picks.size
+  }));
+  const maxScore = Math.max(...info.map(r => r.score));
+
+  const wrap = document.getElementById("r-blocks");
+  const hint = document.getElementById("rank-hint");
+  wrap.innerHTML = "";
+
+  const scored = info.filter(r => r.score > 0);
+  if (scored.length === 0){
+    hint.style.display = "none";
+    const empty = document.createElement("div");
+    empty.className = "section-block";
+    empty.innerHTML = '<h3>本次沒有勾選任何情境</h3><p style="margin:0;">四個領域你都選擇了「以上皆不符合」。如果之後有任何情境開始符合你的狀態，歡迎再回來測一次，觀察自己的變化。</p>';
+    wrap.appendChild(empty);
+    return;
+  }
+  hint.style.display = "block";
+
+  scored.forEach((r) => {
+    const isTop = maxScore > 0 && r.score === maxScore;
+    const picks = state.answers[r.idx].picks;
+    const blockId = "rb-block-" + r.d.key;
+
+    const answersHtml = r.d.questions.map((q, i) => {
+      const on = picks.has(i);
+      return '<li class="' + (on ? "checked" : "unchecked") + '">' +
+             '<span class="mk">' + (on ? "✓" : "✗") + '</span>' +
+             '<span>' + q + '</span></li>';
+    }).join("");
+
+    const block = document.createElement("div");
+    block.id = blockId;
+    block.className = "result-block" + (isTop ? " top" : "") + (isTop ? "" : " collapsed");
+    block.innerHTML =
+      '<div class="rb-head">' +
+        '<span class="badge">' + r.d.key + '</span>' +
+        '<span class="rb-name">' + r.d.short + '</span>' +
+        (isTop ? '<span class="tag-top">分數最高</span>' : '') +
+        '<span class="rb-meta">' +
+          '<span class="rb-score">' + r.score + ' / 5</span>' +
+          '<span class="rb-chevron">▾</span>' +
+        '</span>' +
+      '</div>' +
+      '<div class="rb-content">' +
+        '<div class="rb-top">' +
+          '<div class="rb-cell rb-answers"><h4>你的作答（✓ 勾選　✗ 未勾選）</h4><ul class="answer-list">' + answersHtml + '</ul></div>' +
+          '<div class="rb-cell rb-status"><h4>目前狀態</h4>' + r.d.status + '</div>' +
+        '</div>' +
+        '<div class="rb-bottom">' + r.d.exercise + '</div>' +
+      '</div>';
+    block.querySelector(".rb-head").addEventListener("click", () => block.classList.toggle("collapsed"));
+    wrap.appendChild(block);
+  });
+}
+
+/* ============ Submit results to Google Apps Script backend ============ */
+// 部署 GAS 為 Web App 後，將下方網址換成你的「/exec」網址。部署前這裡會保持空白，送出動作會自動略過。
+const GAS_ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbyqq8MGNvyMNlCCIhfSkpxmC5p9aWmUNdWZYeEiGUVQT71mAQGy7nGErENszqYTFUuN/exec";
+
+// 用「隱藏表單 + 隱藏 iframe」提交，而非 fetch。
+// 原因：像 Google Sites 這類會把嵌入內容放進沙盒 iframe 的平台，常會限制 fetch/XHR 對外部網域發出請求，
+// 但一般的 <form> 提交屬於瀏覽器原生的導覽行為，不受此限制影響，相容性更好。
+function submitViaHiddenForm(payload){
+  return new Promise((resolve) => {
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = GAS_ENDPOINT_URL;
+    form.target = "gas-submit-frame";
+    form.style.display = "none";
+
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "payload";
+    input.value = JSON.stringify(payload);
+    form.appendChild(input);
+
+    document.body.appendChild(form);
+    form.submit();
+    // 表單提交無法讀取伺服器回應（如同 no-cors fetch），提交後稍待即可清理節點
+    setTimeout(() => { form.remove(); resolve(); }, 1000);
+  });
+}
+
+async function submitResultsToBackend(){
+  if (!GAS_ENDPOINT_URL || !state.user) return;
+
+  try {
+    const domainTexts = DOMAINS.map((d, idx) => {
+      const picks = state.answers[idx].picks;
+      if (picks.size === 0) return "（本次皆不符合）";
+      return [...picks].sort((a, b) => a - b).map(i => "• " + d.questions[i]).join("\n");
+    });
+
+    const maxScore = currentMaxScore();
+    const images = [];
+    for (let i = 0; i < DOMAINS.length; i++){
+      const item = { d: DOMAINS[i], idx: i, score: state.answers[i].picks.size };
+      const isTop = maxScore > 0 && item.score === maxScore;
+      const canvas = await captureDomainCanvas(item, isTop);
+      images.push(canvas.toDataURL("image/jpeg", 0.92));
+    }
+
+    const payload = {
+      name: state.user.name,
+      email: state.user.email,
+      domainA: domainTexts[0],
+      domainB: domainTexts[1],
+      domainC: domainTexts[2],
+      domainD: domainTexts[3],
+      imageB64: images
+    };
+
+    await submitViaHiddenForm(payload);
+  } catch (e){
+    console.warn("送出測驗結果至後端時發生錯誤（不影響使用者操作）：", e);
+  }
+}
+
+/* ============ Download high-quality JPG images (4 separate files) ============ */
+const CAPTURE_WIDTH = 700;
+
+function currentMaxScore(){
+  return Math.max(...DOMAINS.map((d, idx) => state.answers[idx].picks.size));
+}
+
+// iPadOS 13+ 預設會把自己偽裝成 Mac 版 Safari 的 UA，需另外用觸控點數判斷才能正確辨識
+function isIOSDevice(){
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+         (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+function canvasToBlob(canvas){
+  return new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 1.0));
+}
+
+/**
+ * iOS／iPadOS 的 Safari（含 LINE 內建瀏覽器，底層同為 WKWebView）對 <a download> 搭配
+ * data:/blob: 網址的支援並不穩定，常見狀況是直接把「整個分頁」導向圖片內容本身，
+ * 導致原本的測驗結果頁面被取代、無法返回。
+ * 因此在 iOS 上改為：在（呼叫端已於使用者點擊當下同步開好的）新分頁顯示圖片，
+ * 讓使用者長按圖片選擇「儲存到照片」，原本頁面完全不受影響、也不會被導頁。
+ * 其他平台（Android／桌機）維持原本 <a download> 的正常下載行為。
+ */
+async function triggerImageSave(canvas, filename, preOpenedWindow){
+  const blob = await canvasToBlob(canvas);
+  const blobUrl = URL.createObjectURL(blob);
+
+  if (isIOSDevice()){
+    if (preOpenedWindow && !preOpenedWindow.closed){
+      preOpenedWindow.location.href = blobUrl;
+    } else {
+      window.open(blobUrl, "_blank");
+    }
+  } else {
+    const link = document.createElement("a");
+    link.download = filename;
+    link.href = blobUrl;
+    link.click();
+  }
+
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+}
+
+function buildFileName(d){
+  return "潛意識自我破壞程序測驗_" + d.key + "_" + d.short + ".jpg";
+}
+
+function buildCaptureBlock(item, isTop){
+  const { d, score, idx } = item;
+  const picks = state.answers[idx].picks;
+
+  const answersHtml = d.questions.map((q, i) => {
+    const on = picks.has(i);
+    return '<li class="' + (on ? "checked" : "unchecked") + '">' +
+           '<span class="mk">' + (on ? "✓" : "✗") + '</span>' +
+           '<span>' + q + '</span></li>';
+  }).join("");
+
+  const node = document.createElement("div");
+  node.className = "result-block" + (isTop ? " top" : "");
+  node.style.cssText = "position:fixed;left:-99999px;top:0;width:" + CAPTURE_WIDTH + "px;margin:0;";
+  node.innerHTML =
+    '<div class="rb-head">' +
+      '<span class="badge">' + d.key + '</span>' +
+      '<span class="rb-name">' + d.short + '</span>' +
+      (isTop ? '<span class="tag-top">分數最高</span>' : '') +
+      '<span class="rb-meta"><span class="rb-score">' + score + ' / 5</span></span>' +
+    '</div>' +
+    '<div class="rb-content" style="display:block;">' +
+      '<div class="rb-top" style="display:grid;grid-template-columns:1fr 1fr;">' +
+        '<div class="rb-cell rb-answers" style="border-right:1px solid #d7e7ee;border-bottom:0;"><h4>你的作答（✓ 勾選　✗ 未勾選）</h4><ul class="answer-list">' + answersHtml + '</ul></div>' +
+        '<div class="rb-cell rb-status"><h4>目前狀態</h4>' + d.status + '</div>' +
+      '</div>' +
+      '<div class="rb-bottom">' + d.exercise + '</div>' +
+    '</div>';
+  document.body.appendChild(node);
+  return node;
+}
+
+async function captureDomainCanvas(item, isTop){
+  const node = buildCaptureBlock(item, isTop);
+  try {
+    return await html2canvas(node, { scale: 2, useCORS: true, backgroundColor: "#ffffff", width: CAPTURE_WIDTH });
+  } finally {
+    node.remove();
+  }
+}
+
+async function downloadReport(){
+  const btn = document.getElementById("btn-download");
+  if (typeof html2canvas === "undefined"){
+    alert("報告產生元件尚未載入，請確認網路連線後再試一次。");
+    return;
+  }
+  const original = btn.textContent;
+  btn.disabled = true;
+
+  try {
+    // 固定依領域 1–4 順序下載（0 分也呈現）；每個領域各自輸出一張獨立圖片，不打包壓縮檔
+    const info = DOMAINS.map((d, idx) => ({
+      d, idx, score: state.answers[idx].picks.size
+    }));
+    const maxScore = Math.max(...info.map(r => r.score));
+
+    // iOS：在使用者點擊「一次下載」的當下就同步開好 4 個空白分頁，避免非同步處理後被攔截彈出視窗
+    const preOpenedWindows = isIOSDevice() ? info.map(() => window.open("", "_blank")) : info.map(() => null);
+
+    for (let i = 0; i < info.length; i++){
+      btn.textContent = "下載中…（" + (i + 1) + " / " + info.length + "）";
+      const isTop = maxScore > 0 && info[i].score === maxScore;
+      const canvas = await captureDomainCanvas(info[i], isTop);
+      await triggerImageSave(canvas, buildFileName(info[i].d), preOpenedWindows[i]);
+      if (i < info.length - 1){
+        // 觸發下一個下載前稍作間隔，降低瀏覽器擋下連續多重下載的機率
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    }
+  } catch (e){
+    alert("圖片產生失敗，請稍後再試一次。");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = original;
+  }
+}
+
+function restart(){
+  state.current = 0;
+  state.user = null;
+  state.answers = DOMAINS.map(() => ({ picks: new Set(), none: false }));
+
+  const nameInput = document.getElementById("login-name");
+  const emailInput = document.getElementById("login-email");
+  nameInput.value = "";
+  emailInput.value = "";
+  clearFieldError(nameInput, document.getElementById("login-name-error"));
+  clearFieldError(emailInput, document.getElementById("login-email-error"));
+
+  // 清掉網址上殘留的 #result= 分享連結片段，避免下次重新整理時又載入舊結果
+  history.replaceState({ screen: "intro", domainIndex: 0 }, "", location.pathname + location.search);
+  show("intro");
+}
+
+/* ============ LINE in-app browser handling ============ */
+// LINE（及部分其他 App 內建瀏覽器）有時會封鎖或無法正常開啟外部連結（如 Google 表單、FB/IG）。
+// Android 上可透過 intent:// 協議強制以裝置的預設瀏覽器開啟；iOS 的 WKWebView 沒有可靠的 JS 強制跳出方式，
+// 因此改為顯示提示，引導使用者用 LINE 內建的「在瀏覽器中開啟」功能。
+function isLineUA(){
+  return /\bLine\//i.test(navigator.userAgent);
+}
+function isAndroidUA(){
+  return /Android/i.test(navigator.userAgent);
+}
+
+/**
+ * LINE 內建瀏覽器對外部連結（Google 表單、FB、IG）的處理並不可靠：
+ * - 許多簡易的 App 內建瀏覽器並未真正支援 target="_blank" 開新分頁，點擊常會被直接吃掉、毫無反應。
+ * - 因此在 LINE 環境下一律攔截點擊，改由程式主動導向：
+ *   - Android：透過 intent:// 協議請系統用預設瀏覽器開啟，等同完全跳出 LINE 的 WebView。
+ *   - iOS（WKWebView 沒有官方支援的 JS 強制跳出方式）：直接在目前分頁導向目標網址，
+ *     至少確保點擊後一定會開啟內容，而不是因為 target=_blank 被忽略而毫無反應；
+ *     若使用者想改用手機真正的瀏覽器，畫面上另有提示引導使用 LINE 自帶的「在瀏覽器中開啟」。
+ * 一般瀏覽器（不在 LINE 內）完全不受影響，維持原本 target="_blank" 開新分頁的行為。
+ */
+function handleExternalLinkClick(e, url){
+  if (!isLineUA()) return; // 一般瀏覽器：不介入，交由 <a target="_blank"> 原生行為處理
+  e.preventDefault();
+  try {
+    if (isAndroidUA()){
+      const scheme = url.indexOf("https://") === 0 ? "https" : "http";
+      const stripped = url.replace(/^https?:\/\//, "");
+      const fallback = encodeURIComponent(url);
+      // 加上 S.browser_fallback_url：即使 intent 解析失敗，仍會退回原本網址開啟，提高成功率
+      location.href = "intent://" + stripped + "#Intent;scheme=" + scheme + ";S.browser_fallback_url=" + fallback + ";end";
+    } else {
+      location.href = url;
+    }
+  } catch (err){
+    console.warn("導向外部連結失敗，改用原本網址：", err);
+    location.href = url;
+  }
+}
+
+/* ============ Shareable result link (automatic, no manual save step) ============ */
+function encodeResultPayload(){
+  const compact = {
+    n: state.user.name,
+    e: state.user.email,
+    a: state.answers.map(a => a.none ? "N" : [...a.picks].sort((x, y) => x - y).join(""))
+  };
+  return encodeURIComponent(JSON.stringify(compact));
+}
+
+function decodeResultPayloadFromHash(){
+  const m = /^#result=(.+)$/.exec(location.hash);
+  if (!m) return null;
+  try {
+    const compact = JSON.parse(decodeURIComponent(m[1]));
+    if (!compact || !Array.isArray(compact.a) || compact.a.length !== DOMAINS.length) return null;
+    return compact;
+  } catch (e){
+    return null;
+  }
+}
+
+function restoreFromSavedLink(compact){
+  state.user = { name: compact.n, email: compact.e };
+  state.answers = compact.a.map((code) => {
+    if (code === "N") return { picks: new Set(), none: true };
+    const picks = new Set([...code].map((ch) => parseInt(ch, 10)));
+    return { picks, none: false };
+  });
+}
+
+// 每次呈現結果頁時自動呼叫：把目前結果編碼進網址 hash（用 replaceState，不會多產生一筆瀏覽紀錄）。
+// 之後不論是重新整理、或從瀏覽器紀錄／分頁重新開啟同一個網址，都會直接回到這份結果，不用使用者手動儲存。
+function syncResultHash(){
+  const encoded = encodeResultPayload();
+  history.replaceState({ screen: "result", domainIndex: 0 }, "", "#result=" + encoded);
+}
+
+/* ============ Browser back/forward within the quiz ============ */
+function pushScreenState(screen, domainIndex){
+  history.pushState({ screen: screen, domainIndex: domainIndex || 0 }, "");
+}
+
+window.addEventListener("popstate", (e) => {
+  const st = e.state;
+  if (!st || st.screen === "intro"){
+    show("intro", { skipHistory: true });
+    return;
+  }
+  if (st.screen === "domain"){
+    state.current = st.domainIndex;
+    renderDomain();
+    show("domain", { skipHistory: true });
+    return;
+  }
+  if (st.screen === "result"){
+    renderResult({ skipSubmit: true });
+    show("result", { skipHistory: true });
+  }
+});
+
+/* ============ Wire up (core interactivity first, so it always attaches) ============ */
+document.getElementById("btn-start").addEventListener("click", validateLoginAndStart);
+el.next.addEventListener("click", goNext);
+el.prev.addEventListener("click", goPrev);
+document.getElementById("btn-download").addEventListener("click", downloadReport);
+document.getElementById("btn-restart").addEventListener("click", restart);
+
+/* ============ Restore a saved result link, if this URL carries one ============ */
+try {
+  const savedResult = decodeResultPayloadFromHash();
+  if (savedResult){
+    restoreFromSavedLink(savedResult);
+    renderResult({ skipSubmit: true });
+    show("result", { skipHistory: true });
+    history.replaceState({ screen: "result", domainIndex: 0 }, "");
+  } else {
+    history.replaceState({ screen: "intro", domainIndex: 0 }, "");
+  }
+} catch (e){
+  console.warn("還原已儲存的結果連結時發生錯誤（不影響全新測驗）：", e);
+  history.replaceState({ screen: "intro", domainIndex: 0 }, "");
+}
+
+/* ============ LINE in-app browser handling (best-effort; wrapped so it can never break core buttons) ============ */
+try {
+  document.querySelectorAll(".btn-cta, .act.fb, .act.ig").forEach(a => {
+    a.addEventListener("click", (e) => handleExternalLinkClick(e, a.href));
+  });
+  if (isLineUA()){
+    document.getElementById("line-banner").classList.add("show");
+  }
+} catch (e){
+  console.warn("LINE 瀏覽器偵測初始化失敗（不影響其餘功能）：", e);
+}
+</script>
+</body>
+</html>
