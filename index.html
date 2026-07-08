@@ -270,18 +270,6 @@
   .copyright a{color:var(--primary);text-decoration:none;font-weight:700;}
   .copyright a:hover{text-decoration:underline;}
 
-  /* Toast — 送出結果後的輕量成功／失敗視覺回饋 */
-  .toast{
-    position:fixed;left:50%;bottom:22px;transform:translate(-50%,10px);
-    max-width:min(90vw,420px);
-    background:var(--primary-deep);color:#fff;font-size:clamp(13px,2.8vw,14px);font-weight:700;
-    padding:12px 20px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.25);
-    opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;
-    z-index:100;text-align:center;line-height:1.6;
-  }
-  .toast.show{opacity:1;transform:translate(-50%,0);}
-  .toast.toast-error{background:#8a1f1f;}
-
   /* ===== Responsive ===== */
   @media (max-width:1024px){ .app{width:85%;} }
   @media (max-width:640px){
@@ -446,9 +434,6 @@
 
 <!-- 隱藏 iframe：作為背景送出測驗結果表單的提交目標，避免頁面跳轉 -->
 <iframe name="gas-submit-frame" style="display:none;" title="background-submit"></iframe>
-
-<!-- 送出結果後的輕量成功／失敗提示 -->
-<div class="toast" id="submit-toast"></div>
 
 <script>
 /* ============ Data ============ */
@@ -910,42 +895,11 @@ function renderResult(opts){
 // 部署 GAS 為 Web App 後，將下方網址換成你的「/exec」網址。部署前這裡會保持空白，送出動作會自動略過。
 const GAS_ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbyqq8MGNvyMNlCCIhfSkpxmC5p9aWmUNdWZYeEiGUVQT71mAQGy7nGErENszqYTFUuN/exec";
 
-// 送出結果後的輕量成功／失敗視覺回饋（僅代表「是否收到回應」，無法保證 Sheet 真的寫入成功）
-let toastTimer = null;
-function showToast(message, isError){
-  const toast = document.getElementById("submit-toast");
-  if (!toast) return;
-  toast.textContent = message;
-  toast.className = "toast show" + (isError ? " toast-error" : "");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { toast.className = "toast"; }, 4000);
-}
-
 // 用「隱藏表單 + 隱藏 iframe」提交，而非 fetch。
 // 原因：像 Google Sites 這類會把嵌入內容放進沙盒 iframe 的平台，常會限制 fetch/XHR 對外部網域發出請求，
 // 但一般的 <form> 提交屬於瀏覽器原生的導覽行為，不受此限制影響，相容性更好。
 function submitViaHiddenForm(payload){
   return new Promise((resolve) => {
-    const frame = document.querySelector('iframe[name="gas-submit-frame"]');
-    let settled = false;
-
-    function finish(message, isError){
-      if (settled) return;
-      settled = true;
-      clearTimeout(timeoutId);
-      frame.removeEventListener("load", onLoad);
-      frame.removeEventListener("error", onError);
-      showToast(message, isError);
-      resolve();
-    }
-    const onLoad = () => finish("✅ 測驗結果已送出", false);
-    const onError = () => finish("⚠️ 結果可能未送出成功，建議手動截圖保存", true);
-    // 保險：若一段時間內都沒有觸發 load/error（例如請求被瀏覽器悄悄擋下），視為送出狀態不明
-    const timeoutId = setTimeout(() => finish("⚠️ 結果可能未送出成功，建議手動截圖保存", true), 8000);
-
-    frame.addEventListener("load", onLoad);
-    frame.addEventListener("error", onError);
-
     const form = document.createElement("form");
     form.method = "POST";
     form.action = GAS_ENDPOINT_URL;
@@ -960,7 +914,8 @@ function submitViaHiddenForm(payload){
 
     document.body.appendChild(form);
     form.submit();
-    setTimeout(() => form.remove(), 1000);
+    // 表單提交無法讀取伺服器回應（如同 no-cors fetch），提交後稍待即可清理節點
+    setTimeout(() => { form.remove(); resolve(); }, 1000);
   });
 }
 
@@ -996,7 +951,6 @@ async function submitResultsToBackend(){
     await submitViaHiddenForm(payload);
   } catch (e){
     console.warn("送出測驗結果至後端時發生錯誤（不影響使用者操作）：", e);
-    showToast("⚠️ 結果可能未送出成功，建議手動截圖保存", true);
   }
 }
 
