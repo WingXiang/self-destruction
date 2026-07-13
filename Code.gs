@@ -28,8 +28,11 @@ var MAX_IMAGES = 4;
 var MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 每張圖片解碼後上限 5MB，避免濫用塞爆雲端硬碟
 var MAX_TEXT_LENGTH = 2000; // 每個領域文字欄位上限，避免異常巨量文字寫入試算表
 
-// 結果信件用：寄件顯示名稱與內文中的三個內嵌連結（與前端 index.html 頁面上的文案、連結一致）
+// 結果信件用：寄件顯示名稱、寄件地址與內文中的三個內嵌連結（與前端 index.html 頁面上的文案、連結一致）
+// 注意：SENDER_EMAIL 必須先在「執行這支程式的 Google 帳號」的 Gmail 設定裡，
+// 於「帳戶和匯入 → 寄件地址」新增並完成驗證，否則 GmailApp.sendEmail 的 from 會失敗。
 var SENDER_NAME = "Linda 洋溢人生潛意識信念專家";
+var SENDER_EMAIL = "pura0118@gmail.com";
 var CTA_FORM_URL = "https://forms.gle/CtouUvrLKeAV8z258";
 var IG_URL = "https://www.instagram.com/linda_hsyh";
 var FB_URL = "https://www.facebook.com/Linda.hsyh";
@@ -185,10 +188,9 @@ function sendResultEmail(email, name, blobsWithLabel) {
   if (blobsWithLabel.length === 0) return; // 沒有任何圖片可寄送時略過
 
   try {
-    MailApp.sendEmail({
-      to: email,
+    GmailApp.sendEmail(email, buildResultEmailSubject(name), buildResultEmailPlainText(name), {
+      from: SENDER_EMAIL,
       name: SENDER_NAME,
-      subject: buildResultEmailSubject(name),
       htmlBody: buildResultEmailHtml(name),
       attachments: blobsWithLabel.map(function (item) { return item.blob; })
     });
@@ -199,6 +201,24 @@ function sendResultEmail(email, name, blobsWithLabel) {
 
 function buildResultEmailSubject(name) {
   return "[潛意識自我破壞程序檢測] " + name + "，你的專屬結果出爐了 🌿";
+}
+
+// 純文字版信件內容：極少數不支援 HTML 信件的信箱會退回顯示這一版，連結直接寫出網址
+function buildResultEmailPlainText(name) {
+  return (
+    name + " 你好：\n\n" +
+    "謝謝你剛剛完成了「潛意識自我破壞程序檢測」。\n\n" +
+    "附件是你四大領域的完整結果圖片，記得收藏起來，有空的時候可以重新回顧一次。\n\n" +
+    "很多卡住，不是因為你不夠努力，而是你一直用舊的底層設定，在面對新的人生階段。\n" +
+    "當你願意看見它，你就已經開始鬆動它了。\n\n" +
+    "如果你想更深入了解自己這次測出來的自我破壞模式，歡迎預約每月限量 3 場的\n" +
+    "潛意識信念校準諮詢，我會陪你一起把它重新校準成支持你前進的力量。\n\n" +
+    "👉 立即填寫預約表單：" + CTA_FORM_URL + "\n\n" +
+    "祝福你\n" +
+    "Linda 洋溢人生潛意識信念專家\n" +
+    "關注 Linda 的 Instagram：" + IG_URL + "\n" +
+    "關注 Linda 的 Facebook：" + FB_URL
+  );
 }
 
 function buildResultEmailHtml(name) {
@@ -232,10 +252,9 @@ function buildResultEmailHtml(name) {
  */
 function testSendResultEmail() {
   var testEmail = "換成你要收測試信的信箱@gmail.com"; // ← 執行前記得先改這裡
-  MailApp.sendEmail({
-    to: testEmail,
+  GmailApp.sendEmail(testEmail, "【測試】" + buildResultEmailSubject("測試"), buildResultEmailPlainText("測試"), {
+    from: SENDER_EMAIL,
     name: SENDER_NAME,
-    subject: "【測試】" + buildResultEmailSubject("測試"),
     htmlBody: buildResultEmailHtml("測試")
   });
 }
