@@ -219,6 +219,28 @@ function buildResultEmailHtml(name) {
 }
 
 /**
+ * 手動測試信件功能用：不需要跑過整個測驗流程，直接在 Apps Script 編輯器裡選這個函式、
+ * 按「執行」即可單獨測試寄信是否正常。
+ *
+ * 第一次執行時，Google 會跳出授權視窗，請務必允許「以你的名義傳送電子郵件」的權限——
+ * 這個授權只有在「手動執行」時才會出現，光是部署新版本並不會觸發，這也是目前
+ * 使用者收不到信最可能的原因（doPost 裡的 try/catch 會把權限不足的錯誤悄悄記錄成
+ * 警告，不會讓其他功能中斷，但也不會讓你知道寄信其實失敗了）。
+ *
+ * 使用方式：把下面的 email 換成你自己（或 pura0118）的信箱，選這個函式，按「執行」，
+ * 完成授權後檢查該信箱是否收到測試信。
+ */
+function testSendResultEmail() {
+  var testEmail = "換成你要收測試信的信箱@gmail.com"; // ← 執行前記得先改這裡
+  MailApp.sendEmail({
+    to: testEmail,
+    name: SENDER_NAME,
+    subject: "【測試】" + buildResultEmailSubject("測試"),
+    htmlBody: buildResultEmailHtml("測試")
+  });
+}
+
+/**
  * 把 [{label, url}, ...] 組成單一儲存格的富文字內容：
  * 每行只顯示「領域X名稱」這段文字本身，並把該整行文字直接設為可點擊的內嵌超連結
  * （連到該領域的圖片網址），不額外顯示原始網址，畫面更簡潔。
