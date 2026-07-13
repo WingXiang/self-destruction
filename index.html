@@ -369,15 +369,14 @@
     <div id="result-capture">
       <div class="section-block">
         <h3>📊 計分方式</h3>
-        <p>請分別計算你在 A、B、C、D 四個領域中，各勾選了幾題。每個領域滿分 5 分。</p>
-        <ul class="scale-list">
+               <ul class="scale-list">
           <li><b>0–1 分</b>：目前影響較低</li>
           <li><b>2 分</b>：已有隱性影響，值得開始覺察</li>
           <li><b>3–4 分</b>：這是你目前主要的自我破壞模式</li>
           <li><b>5 分</b>：這個程序正在高度運作，建議優先校準</li>
         </ul>
         <p style="margin-top:12px;">如果有兩個以上領域同分，代表它們可能正在互相影響。例如：金錢卡住，背後可能是自我價值不穩；關係失衡，可能也會消耗你的能量與執行力。</p>
-        <p class="em-primary">請先從分數最高的領域開始練習。</p>
+        <p class="em-primary">請先從分數最高的領域開始練習調整。</p>
       </div>
 
       <p class="rank-hint" id="rank-hint" style="display:none;">📉 以下依「領域一～四」順序呈現<br>標註<b>「分數最高」</b>的領域代表目前對你影響最大，建議優先校準。<br>點擊每個標題即可展開或收合內容。</p>
@@ -998,7 +997,7 @@ async function triggerImageSave(canvas, filename, preOpenedWindow){
 }
 
 function buildFileName(d){
-  return "潛意識自我破壞程序測驗_" + d.key + "_" + d.short + ".jpg";
+  return "潛意識自我破壞程序檢測_" + d.key + "_" + d.short + ".jpg";
 }
 
 function buildCaptureBlock(item, isTop){
