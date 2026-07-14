@@ -258,11 +258,11 @@
   .act svg{width:22px;height:22px;fill:#fff;flex:0 0 auto;}
 
   .dl-wrap{text-align:center;margin-top:26px;}
-  .dl-note{margin:10px 0 0;font-size:clamp(11px,2.5vw,13px);color:var(--ink-soft);}
+  .dl-row{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;}
+  .dl-side-note{font-size:clamp(13px,2.8vw,15px);color:var(--primary-dark);font-weight:700;}
 
-  /* Prominent red warning about in-app browsers not supporting downloads */
-  .warn-note{margin-top:20px;background:#fdecea;border:1px solid #f5c6c3;border-left:4px solid #dc3545;border-radius:10px;padding:14px 16px;font-size:clamp(13px,2.8vw,15px);color:#8a1f1f;font-weight:700;line-height:1.8;display:flex;gap:12px;align-items:flex-start;}
-  .warn-note .ic{font-size:20px;flex:0 0 auto;}
+  /* Field-level hint under the E-mail input on the intro screen */
+  .email-hint{margin:4px 0 0;font-size:clamp(12px,2.6vw,13px);color:var(--ink-soft);}
 
   /* Copyright — bottom center of every page */
   .copyright{text-align:center;color:var(--ink-soft);font-size:13px;letter-spacing:.04em;padding:22px 12px 8px;line-height:1.8;}
@@ -319,11 +319,8 @@
         <label for="login-email">E-mail <span class="req">*</span></label>
         <input type="email" id="login-email" class="text-input" placeholder="請輸入你的 Email" />
         <p class="field-error" id="login-email-error"></p>
+        <p class="email-hint">📧 測驗結果將會寄至您填寫的信箱</p>
       </div>
-    </div>
-
-    <div class="warn-note">
-      <div>⚠️請注意：如使用的內建瀏覽器無法下載報告, 請直接使用手機截圖</div>
     </div>
 
     <div class="actions">
@@ -364,7 +361,8 @@
   <!-- ============ SCREEN: RESULT ============ -->
   <section id="screen-result" class="card" style="display:none;">
     <div class="user-badge-wrap"><span class="user-badge">填答者：<span id="user-badge-name"></span></span></div>
-    <h1 class="center">你的測驗結果</h1>
+    <h1 class="center">你的檢測結果</h1>
+    <p class="step-guide"><span>📧 測驗結果已同步寄至您填寫的信箱</span></p>
 
     <div id="result-capture">
       <div class="section-block">
@@ -385,9 +383,9 @@
     </div>
 
     <div class="dl-wrap">
-      <button class="btn btn-primary" id="btn-download">下載所有結果</button>
-      <div class="warn-note">
-        <div>⚠️請注意：如使用的內建瀏覽器無法下載報告, 請直接使用手機截圖</div>
+      <div class="dl-row">
+        <button class="btn btn-primary" id="btn-download">點此下載所有結果</button>
+        <span class="dl-side-note">📧 測驗結果將會寄至您填寫的信箱</span>
       </div>
     </div>
 
