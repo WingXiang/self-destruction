@@ -970,6 +970,12 @@ function isIOSDevice(){
          (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 }
 
+// 用「主要輸入裝置是不是手指」判斷手機/平板，涵蓋 Android 與 iOS，比只認 iOS 的 isIOSDevice() 更廣，
+// 用來決定下載按鈕的文字說明：手機/平板下載不穩定，文字上以「請至信箱查看」為主、下載為輔助選項
+function isTouchPrimaryDevice(){
+  return !!(window.matchMedia && window.matchMedia("(pointer: coarse)").matches);
+}
+
 function canvasToBlob(canvas){
   return new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 1.0));
 }
@@ -1266,6 +1272,13 @@ el.next.addEventListener("click", goNext);
 el.prev.addEventListener("click", goPrev);
 document.getElementById("btn-download").addEventListener("click", downloadReport);
 document.getElementById("btn-restart").addEventListener("click", restart);
+
+// 手機/平板下載不穩定，按鈕文字改以「請至信箱查看」為主、下載為輔助選項；按鈕功能本身不變
+if (isTouchPrimaryDevice()){
+  document.getElementById("btn-download").innerHTML =
+    '<span class="btn-download-line1">請至信箱查看檢測結果</span>' +
+    '<span class="btn-download-line2">( 手機/平板可點此嘗試下載 )</span>';
+}
 
 // Email 欄位失焦時立即驗證格式，不用等到按下「開始檢測」才知道錯在哪裡
 document.getElementById("login-email").addEventListener("blur", () => {
