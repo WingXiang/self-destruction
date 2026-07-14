@@ -200,7 +200,9 @@ function sendResultEmail(email, name, blobsWithLabel) {
 }
 
 function buildResultEmailSubject(name) {
-  return "[潛意識自我破壞程序檢測] " + name + "，你的專屬結果出爐了 🌿";
+  // 用 \u{...} unicode escape 而非直接貼上表情符號字元，避免複製貼上過程中多位元組字元被編碼轉換工具弄亂
+  // （曾發生貼進 Apps Script 編輯器後變成亂碼 "������" 的狀況，改用逸出序列可徹底避免這個問題）
+  return "[潛意識自我破壞程序檢測] " + name + "，你的專屬結果出爐了 \u{1F33F}";
 }
 
 // 純文字版信件內容：極少數不支援 HTML 信件的信箱會退回顯示這一版，連結直接寫出網址
@@ -213,7 +215,7 @@ function buildResultEmailPlainText(name) {
     "當你願意看見它，你就已經開始鬆動它了。\n\n" +
     "如果你想更深入了解自己這次測出來的自我破壞模式，歡迎預約每月限量 3 場的\n" +
     "潛意識信念校準諮詢，我會陪你一起把它重新校準成支持你前進的力量。\n\n" +
-    "👉 立即填寫預約表單：" + CTA_FORM_URL + "\n\n" +
+    "\u{1F449} 立即填寫預約表單：" + CTA_FORM_URL + "\n\n" +
     "祝福你\n" +
     "Linda 洋溢人生潛意識信念專家\n" +
     "關注 Linda 的 Instagram：" + IG_URL + "\n" +
@@ -230,7 +232,7 @@ function buildResultEmailHtml(name) {
     "當你願意看見它，你就已經開始鬆動它了。<br><br>" +
     "如果你想更深入了解自己這次測出來的自我破壞模式，歡迎預約每月限量 3 場的<br>" +
     "潛意識信念校準諮詢，我會陪你一起把它重新校準成支持你前進的力量。<br><br>" +
-    "<a href=\"" + CTA_FORM_URL + "\">👉 立即填寫預約表單</a><br><br>" +
+    "<a href=\"" + CTA_FORM_URL + "\">\u{1F449} 立即填寫預約表單</a><br><br>" +
     "祝福你<br>" +
     "Linda 洋溢人生潛意識信念專家<br>" +
     "<a href=\"" + IG_URL + "\">關注 Linda 的 Instagram</a><br>" +
