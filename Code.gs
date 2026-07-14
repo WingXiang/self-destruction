@@ -215,7 +215,7 @@ function buildResultEmailPlainText(name) {
     "當你願意看見它，你就已經開始鬆動它了。\n\n" +
     "如果你想更深入了解自己這次測出來的自我破壞模式，歡迎預約每月限量 3 場的\n" +
     "潛意識信念校準諮詢，我會陪你一起把它重新校準成支持你前進的力量。\n\n" +
-    "\u{1F449} 立即填寫預約表單：" + CTA_FORM_URL + "\n\n" +
+    "→ 立即填寫預約表單：" + CTA_FORM_URL + "\n\n" +
     "祝福你\n" +
     "Linda 洋溢人生潛意識信念專家\n" +
     "關注 Linda 的 Instagram：" + IG_URL + "\n" +
@@ -232,7 +232,7 @@ function buildResultEmailHtml(name) {
     "當你願意看見它，你就已經開始鬆動它了。<br><br>" +
     "如果你想更深入了解自己這次測出來的自我破壞模式，歡迎預約每月限量 3 場的<br>" +
     "潛意識信念校準諮詢，我會陪你一起把它重新校準成支持你前進的力量。<br><br>" +
-    "<a href=\"" + CTA_FORM_URL + "\">\u{1F449} 立即填寫預約表單</a><br><br>" +
+    "<a href=\"" + CTA_FORM_URL + "\">→ 立即填寫預約表單</a><br><br>" +
     "祝福你<br>" +
     "Linda 洋溢人生潛意識信念專家<br>" +
     "<a href=\"" + IG_URL + "\">關注 Linda 的 Instagram</a><br>" +
