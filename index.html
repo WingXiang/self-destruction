@@ -258,11 +258,14 @@
   .act svg{width:22px;height:22px;fill:#fff;flex:0 0 auto;}
 
   .dl-wrap{text-align:center;margin-top:26px;}
-  .dl-row{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;}
-  .dl-side-note{font-size:clamp(13px,2.8vw,15px);color:var(--primary-dark);font-weight:700;}
+  .btn-download-line1{display:block;}
+  .btn-download-line2{display:block;font-size:clamp(12px,2.6vw,13px);font-weight:600;opacity:.9;margin-top:4px;}
 
   /* Field-level hint under the E-mail input on the intro screen */
   .email-hint{margin:4px 0 0;font-size:clamp(12px,2.6vw,13px);color:var(--ink-soft);}
+
+  /* Plain supplementary line under the result heading */
+  .result-subnote{text-align:center;margin:-10px 0 22px;font-size:clamp(13px,2.8vw,15px);color:var(--ink-soft);}
 
   /* Copyright — bottom center of every page */
   .copyright{text-align:center;color:var(--ink-soft);font-size:13px;letter-spacing:.04em;padding:22px 12px 8px;line-height:1.8;}
@@ -362,7 +365,7 @@
   <section id="screen-result" class="card" style="display:none;">
     <div class="user-badge-wrap"><span class="user-badge">填答者：<span id="user-badge-name"></span></span></div>
     <h1 class="center">你的檢測結果</h1>
-    <p class="step-guide"><span>📧 測驗結果已同步寄至您填寫的信箱</span></p>
+    <p class="result-subnote">( 測驗結果已同步寄至您填寫的信箱 )</p>
 
     <div id="result-capture">
       <div class="section-block">
@@ -383,10 +386,10 @@
     </div>
 
     <div class="dl-wrap">
-      <div class="dl-row">
-        <button class="btn btn-primary" id="btn-download">點此下載所有結果</button>
-        <span class="dl-side-note">📧 測驗結果將會寄至您填寫的信箱</span>
-      </div>
+      <button class="btn btn-primary" id="btn-download">
+        <span class="btn-download-line1">點此下載所有結果</span>
+        <span class="btn-download-line2">( 測驗結果已同步寄至您填寫的信箱 )</span>
+      </button>
     </div>
 
     <div class="final-reminder">
@@ -1046,7 +1049,7 @@ async function downloadReport(){
     alert("報告產生元件尚未載入，請確認網路連線後再試一次。");
     return;
   }
-  const original = btn.textContent;
+  const original = btn.innerHTML; // 按鈕內含兩行文字（<span>），用 innerHTML 才能完整還原，textContent 會把結構壓平成一行
   btn.disabled = true;
 
   try {
@@ -1073,7 +1076,7 @@ async function downloadReport(){
     alert("圖片產生失敗，請稍後再試一次。");
   } finally {
     btn.disabled = false;
-    btn.textContent = original;
+    btn.innerHTML = original;
   }
 }
 

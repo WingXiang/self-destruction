@@ -233,7 +233,7 @@ function buildResultEmailHtml(name) {
     "<a href=\"" + CTA_FORM_URL + "\">👉 立即填寫預約表單</a><br><br>" +
     "祝福你<br>" +
     "Linda 洋溢人生潛意識信念專家<br>" +
-    "<a href=\"" + IG_URL + "\">關注 Linda 的 Instagram</a>　" +
+    "<a href=\"" + IG_URL + "\">關注 Linda 的 Instagram</a><br>" +
     "<a href=\"" + FB_URL + "\">關注 Linda 的 Facebook</a>"
   );
 }
