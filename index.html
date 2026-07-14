@@ -1273,11 +1273,14 @@ el.prev.addEventListener("click", goPrev);
 document.getElementById("btn-download").addEventListener("click", downloadReport);
 document.getElementById("btn-restart").addEventListener("click", restart);
 
-// 手機/平板下載不穩定，按鈕文字改以「請至信箱查看」為主、下載為輔助選項；按鈕功能本身不變
+// 手機/平板下載不穩定，直接停用按鈕並改成純提示文字，避免使用者以為點了就能下載；
+// 電腦（滑鼠）維持原本可點擊下載的按鈕與文字
 if (isTouchPrimaryDevice()){
-  document.getElementById("btn-download").innerHTML =
-    '<span class="btn-download-line1">請至信箱查看檢測結果</span>' +
-    '<span class="btn-download-line2">( 手機/平板可點此嘗試下載 )</span>';
+  const dlBtn = document.getElementById("btn-download");
+  dlBtn.innerHTML =
+    '<span class="btn-download-line1">檢測結果已寄送至您填寫的信箱</span>' +
+    '<span class="btn-download-line2">可自行留存複習</span>';
+  dlBtn.disabled = true;
 }
 
 // Email 欄位失焦時立即驗證格式，不用等到按下「開始檢測」才知道錯在哪裡
