@@ -974,46 +974,69 @@ function canvasToBlob(canvas){
   return new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 1.0));
 }
 
+async function canvasToFile(canvas, filename){
+  const blob = await canvasToBlob(canvas);
+  return new File([blob], filename, { type: "image/jpeg" });
+}
+
 /**
- * iOS／iPadOS 的 Safari（含 LINE 內建瀏覽器，底層同為 WKWebView）對 <a download> 搭配
- * data:/blob: 網址的支援並不穩定，常見狀況是直接把「整個分頁」導向圖片內容本身，
- * 導致原本的檢測結果頁面被取代、無法返回。
- * 因此在 iOS 上改為：在（呼叫端已於使用者點擊當下同步開好的）新分頁顯示圖片，
- * 讓使用者長按圖片選擇「儲存到照片」，原本頁面完全不受影響、也不會被導頁。
- * 其他平台（Android／桌機）維持原本 <a download> 的正常下載行為。
+ * 優先嘗試用 Web Share API 跳出系統原生的分享面板，讓使用者直接點選「儲存圖片」，
+ * 不需要長按——這是手機/平板上最接近「像電腦一樣下載」的原生機制。
+ * iOS 15+ Safari 支援一次分享多個檔案；LINE 等 App 內建瀏覽器可能不支援這個 API，
+ * 此時 canShare 會直接回傳 false，交給呼叫端改用備用方式，不會噴錯。
+ * 使用者若在系統分享面板中主動取消，視為「這次操作已經處理過」，回傳 true 讓呼叫端
+ * 不要再跳出備用視窗——不然使用者按了取消，卻又跳出 4 個分頁，會很困惑。
+ */
+async function tryShareFiles(files, title){
+  if (!navigator.canShare || !navigator.share) return false;
+  if (!navigator.canShare({ files })) return false;
+  try {
+    await navigator.share({ files, title });
+    return true;
+  } catch (err){
+    if (err && err.name === "AbortError") return true; // 使用者主動取消分享，尊重這個選擇
+    console.warn("Web Share 分享失敗，改用備用下載方式：", err);
+    return false;
+  }
+}
+
+/**
+ * 備用方式（Web Share 不支援或失敗時使用）：在（呼叫端已於使用者點擊當下同步開好的）
+ * 新分頁用 document.write 寫入一個包含 <img> 標籤的簡易頁面來顯示圖片，讓使用者長按
+ * 圖片選擇「儲存到照片」，原本的檢測結果頁面完全不受影響、也不會被導頁。
  *
  * 平板（iPad）上曾發生開出的新分頁整片空白、圖片完全顯示不出來的狀況：原因是直接把
  * preOpenedWindow.location 導向 blob: 網址，在部分 iPadOS Safari 版本上對「跨視窗存取
- * blob: 網址」的支援並不穩定。改成用 document.write 寫入一個包含 <img> 標籤的簡易頁面
- * 來顯示圖片，相容性明顯更好；並在圖片下方加一行備用文字，萬一還是顯示不出來，
- * 使用者在那個分頁裡就能直接看到「請改用截圖」的提示，不需要在主頁面常態顯示警語。
+ * blob: 網址」的支援並不穩定，改成 document.write 寫入 <img> 之後相容性明顯更好；
+ * 並在圖片下方加一行備用文字，萬一還是顯示不出來，使用者在那個分頁裡就能直接看到
+ * 「請改用截圖」的提示，不需要在主頁面常態顯示警語。
  */
-async function triggerImageSave(canvas, filename, preOpenedWindow){
-  const blob = await canvasToBlob(canvas);
-  const blobUrl = URL.createObjectURL(blob);
-
-  if (isIOSDevice()){
-    const target = (preOpenedWindow && !preOpenedWindow.closed) ? preOpenedWindow : window.open("", "_blank");
-    if (target){
-      target.document.open();
-      target.document.write(
-        '<!DOCTYPE html><html><head><meta charset="UTF-8" />' +
-        '<meta name="viewport" content="width=device-width, initial-scale=1.0" />' +
-        '<title>' + filename + '</title></head>' +
-        '<body style="margin:0;background:#111;text-align:center;font-family:-apple-system,sans-serif;">' +
-        '<img src="' + blobUrl + '" style="max-width:100%;height:auto;display:block;margin:0 auto;" alt="' + filename + '" />' +
-        '<p style="color:#fff;padding:14px;font-size:14px;line-height:1.6;">長按圖片選擇「儲存到照片」。<br>若這個畫面是空白的，請改用手機／平板的螢幕截圖功能保存結果。</p>' +
-        '</body></html>'
-      );
-      target.document.close();
-    }
-  } else {
-    const link = document.createElement("a");
-    link.download = filename;
-    link.href = blobUrl;
-    link.click();
+function showImageInTab(file, preOpenedWindow){
+  const blobUrl = URL.createObjectURL(file);
+  const target = (preOpenedWindow && !preOpenedWindow.closed) ? preOpenedWindow : window.open("", "_blank");
+  if (target){
+    target.document.open();
+    target.document.write(
+      '<!DOCTYPE html><html><head><meta charset="UTF-8" />' +
+      '<meta name="viewport" content="width=device-width, initial-scale=1.0" />' +
+      '<title>' + file.name + '</title></head>' +
+      '<body style="margin:0;background:#111;text-align:center;font-family:-apple-system,sans-serif;">' +
+      '<img src="' + blobUrl + '" style="max-width:100%;height:auto;display:block;margin:0 auto;" alt="' + file.name + '" />' +
+      '<p style="color:#fff;padding:14px;font-size:14px;line-height:1.6;">長按圖片選擇「儲存到照片」。<br>若這個畫面是空白的，請改用手機／平板的螢幕截圖功能保存結果。</p>' +
+      '</body></html>'
+    );
+    target.document.close();
   }
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+}
 
+// 其他平台（Android／桌機）維持原本 <a download> 的正常下載行為
+function downloadFileDirectly(file){
+  const blobUrl = URL.createObjectURL(file);
+  const link = document.createElement("a");
+  link.download = file.name;
+  link.href = blobUrl;
+  link.click();
   setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
 }
 
@@ -1078,17 +1101,36 @@ async function downloadReport(){
     }));
     const maxScore = Math.max(...info.map(r => r.score));
 
-    // iOS：在使用者點擊「一次下載」的當下就同步開好 4 個空白分頁，避免非同步處理後被攔截彈出視窗
-    const preOpenedWindows = isIOSDevice() ? info.map(() => window.open("", "_blank")) : info.map(() => null);
+    if (isIOSDevice()){
+      // 先同步開好 4 個空白分頁當備用方案（Web Share 不支援或失敗時才用），
+      // 避免非同步處理完才呼叫 window.open 被瀏覽器當成非使用者操作而攔截
+      const preOpenedWindows = info.map(() => window.open("", "_blank"));
 
-    for (let i = 0; i < info.length; i++){
-      btn.textContent = "下載中…（" + (i + 1) + " / " + info.length + "）";
-      const isTop = maxScore > 0 && info[i].score === maxScore;
-      const canvas = await captureDomainCanvas(info[i], isTop);
-      await triggerImageSave(canvas, buildFileName(info[i].d), preOpenedWindows[i]);
-      if (i < info.length - 1){
-        // 觸發下一個下載前稍作間隔，降低瀏覽器擋下連續多重下載的機率
-        await new Promise(resolve => setTimeout(resolve, 500));
+      const files = [];
+      for (let i = 0; i < info.length; i++){
+        btn.textContent = "報告產生中…（" + (i + 1) + " / " + info.length + "）";
+        const isTop = maxScore > 0 && info[i].score === maxScore;
+        const canvas = await captureDomainCanvas(info[i], isTop);
+        files.push(await canvasToFile(canvas, buildFileName(info[i].d)));
+      }
+
+      const shared = await tryShareFiles(files, "潛意識自我破壞程序檢測結果");
+      if (shared){
+        // 使用者已經透過系統分享面板處理（或主動取消），備用的空白分頁不需要了，關掉即可
+        preOpenedWindows.forEach(w => { if (w && !w.closed) w.close(); });
+      } else {
+        files.forEach((file, i) => showImageInTab(file, preOpenedWindows[i]));
+      }
+    } else {
+      for (let i = 0; i < info.length; i++){
+        btn.textContent = "下載中…（" + (i + 1) + " / " + info.length + "）";
+        const isTop = maxScore > 0 && info[i].score === maxScore;
+        const canvas = await captureDomainCanvas(info[i], isTop);
+        downloadFileDirectly(await canvasToFile(canvas, buildFileName(info[i].d)));
+        if (i < info.length - 1){
+          // 觸發下一個下載前稍作間隔，降低瀏覽器擋下連續多重下載的機率
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
       }
     }
   } catch (e){
