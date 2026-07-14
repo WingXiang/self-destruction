@@ -57,18 +57,20 @@
     border-radius:var(--radius);
     box-shadow:var(--shadow);
     padding:clamp(22px,5vw,44px);
-    padding-bottom:clamp(84px,10vw,104px);
+    padding-bottom:clamp(120px,16vw,148px);
     overflow:hidden;
   }
+  /* 浮水印固定在右下角，但比原本縮小、往內縮，並大幅加大卡片底部留白，
+     確保開始檢測／下載／重新檢測等按鈕不論裝置尺寸都不會貼近或蓋住浮水印 */
   .card::after{
     content:"";
     position:absolute;
-    right:18px;
-    bottom:16px;
-    width:clamp(64px,12vw,84px);
-    height:clamp(64px,12vw,84px);
+    right:20px;
+    bottom:20px;
+    width:clamp(44px,7vw,56px);
+    height:clamp(44px,7vw,56px);
     background:var(--logo) no-repeat center / contain;
-    opacity:.5;
+    opacity:.4;
     pointer-events:none;
     z-index:0;
   }
@@ -292,11 +294,11 @@
     <h1 class="center">潛意識自我破壞程序檢測</h1>
     <div class="intro-grid">
       <div class="intro-col">
-        <h3 class="intro-col-title">測驗說明</h3>
+        <h3 class="intro-col-title">檢測說明</h3>
         <div class="lead">
           <p>很多人不是不努力，也不是能力不夠。<br>而是潛意識裡，藏著一些我們沒有察覺的「自我破壞程序」。</p>
           <p>它們像背景裡偷偷運作的程式碼<br>在你快要成功、快要被愛、快要穩定、快要變好的時候<br>突然啟動，把你拉回原本熟悉的位置。</p>
- <p>這份測驗會幫助你看見：<br><span class="em-primary">你目前最容易在哪一個領域，啟動自我破壞程序。</span></p>
+ <p>這份檢測會幫助你看見：<br><span class="em-primary">你目前最容易在哪一個領域，啟動自我破壞程序。</span></p>
         </div>
       </div>
       <div class="intro-col">
@@ -310,7 +312,7 @@
       </div>
     </div>
     <div class="note">
-      <div><strong>🌸溫馨提醒：</strong>這份測驗是自我覺察工具，並非心理診斷。如果你長期感到強烈焦慮、憂鬱或身心失衡，建議同時尋求專業心理或醫療協助。</div>
+      <div><strong>🌸溫馨提醒：</strong>這份檢測是自我覺察工具，並非心理診斷。如果你長期感到強烈焦慮、憂鬱或身心失衡，建議同時尋求專業心理或醫療協助。</div>
     </div>
     <div class="login-form">
       <div class="field">
@@ -322,12 +324,12 @@
         <label for="login-email">E-mail <span class="req">*</span></label>
         <input type="email" id="login-email" class="text-input" placeholder="請輸入你的 Email" />
         <p class="field-error" id="login-email-error"></p>
-        <p class="email-hint">📧 測驗結果將會寄至您填寫的信箱</p>
+        <p class="email-hint">檢測結果將會寄至您填寫的信箱</p>
       </div>
     </div>
 
     <div class="actions">
-      <button class="btn btn-primary btn-block" id="btn-start">開始測驗</button>
+      <button class="btn btn-primary btn-block" id="btn-start">開始檢測</button>
     </div>
   </section>
 
@@ -365,7 +367,7 @@
   <section id="screen-result" class="card" style="display:none;">
     <div class="user-badge-wrap"><span class="user-badge">填答者：<span id="user-badge-name"></span></span></div>
     <h1 class="center">你的檢測結果</h1>
-    <p class="result-subnote">( 測驗結果已同步寄至您填寫的信箱 )</p>
+    <p class="result-subnote">( 檢測結果已同步寄至您填寫的信箱 )</p>
 
     <div id="result-capture">
       <div class="section-block">
@@ -388,7 +390,7 @@
     <div class="dl-wrap">
       <button class="btn btn-primary" id="btn-download">
         <span class="btn-download-line1">點此下載所有結果</span>
-        <span class="btn-download-line2">( 測驗結果已同步寄至您填寫的信箱 )</span>
+        <span class="btn-download-line2">( 檢測結果已同步寄至您填寫的信箱 )</span>
       </button>
     </div>
 
@@ -422,7 +424,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.31-1.46.72-2.12 1.38C1.36 2.67.95 3.34.63 4.13.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.38 2.12.66.66 1.33 1.07 2.12 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.86 5.86 0 0 0 2.12-1.38 5.86 5.86 0 0 0 1.38-2.12c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.86 5.86 0 0 0-1.38-2.12A5.86 5.86 0 0 0 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84zm0 10.16A4 4 0 1 1 16 12a4 4 0 0 1-4 4zm7.85-10.4a1.44 1.44 0 1 1-1.44-1.44 1.44 1.44 0 0 1 1.44 1.44z"/></svg>
         關注 Linda 的 Instagram
       </a>
-      <button class="act restart" id="btn-restart">重新測驗</button>
+      <button class="act restart" id="btn-restart">重新檢測</button>
     </div>
   </section>
 
@@ -431,7 +433,7 @@
 
 </div>
 
-<!-- 隱藏 iframe：作為背景送出測驗結果表單的提交目標，避免頁面跳轉 -->
+<!-- 隱藏 iframe：作為背景送出檢測結果表單的提交目標，避免頁面跳轉 -->
 <iframe name="gas-submit-frame" style="display:none;" title="background-submit"></iframe>
 
 <script>
@@ -777,7 +779,7 @@ function goPrev(){
 }
 
 /* ============ Mid-quiz draft (localStorage) ============ */
-// 避免使用者填到一半就切走 App、關掉分頁或手機睡眠導致整份測驗要重來：
+// 避免使用者填到一半就切走 App、關掉分頁或手機睡眠導致整份檢測要重來：
 // 只暫存「尚未進到結果頁」的作答進度；一旦看到結果頁，網址 hash 就是更完整的還原依據（見下方 syncResultHash）。
 const DRAFT_KEY = "sdp_quiz_draft_v1";
 
@@ -791,7 +793,7 @@ function saveDraft(){
     };
     localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
   } catch (e){
-    // localStorage 在無痕模式等環境可能無法使用，略過即可，不影響測驗本身
+    // localStorage 在無痕模式等環境可能無法使用，略過即可，不影響檢測本身
   }
 }
 
@@ -949,7 +951,7 @@ async function submitResultsToBackend(){
 
     await submitViaHiddenForm(payload);
   } catch (e){
-    console.warn("送出測驗結果至後端時發生錯誤（不影響使用者操作）：", e);
+    console.warn("送出檢測結果至後端時發生錯誤（不影響使用者操作）：", e);
   }
 }
 
@@ -973,20 +975,35 @@ function canvasToBlob(canvas){
 /**
  * iOS／iPadOS 的 Safari（含 LINE 內建瀏覽器，底層同為 WKWebView）對 <a download> 搭配
  * data:/blob: 網址的支援並不穩定，常見狀況是直接把「整個分頁」導向圖片內容本身，
- * 導致原本的測驗結果頁面被取代、無法返回。
+ * 導致原本的檢測結果頁面被取代、無法返回。
  * 因此在 iOS 上改為：在（呼叫端已於使用者點擊當下同步開好的）新分頁顯示圖片，
  * 讓使用者長按圖片選擇「儲存到照片」，原本頁面完全不受影響、也不會被導頁。
  * 其他平台（Android／桌機）維持原本 <a download> 的正常下載行為。
+ *
+ * 平板（iPad）上曾發生開出的新分頁整片空白、圖片完全顯示不出來的狀況：原因是直接把
+ * preOpenedWindow.location 導向 blob: 網址，在部分 iPadOS Safari 版本上對「跨視窗存取
+ * blob: 網址」的支援並不穩定。改成用 document.write 寫入一個包含 <img> 標籤的簡易頁面
+ * 來顯示圖片，相容性明顯更好；並在圖片下方加一行備用文字，萬一還是顯示不出來，
+ * 使用者在那個分頁裡就能直接看到「請改用截圖」的提示，不需要在主頁面常態顯示警語。
  */
 async function triggerImageSave(canvas, filename, preOpenedWindow){
   const blob = await canvasToBlob(canvas);
   const blobUrl = URL.createObjectURL(blob);
 
   if (isIOSDevice()){
-    if (preOpenedWindow && !preOpenedWindow.closed){
-      preOpenedWindow.location.href = blobUrl;
-    } else {
-      window.open(blobUrl, "_blank");
+    const target = (preOpenedWindow && !preOpenedWindow.closed) ? preOpenedWindow : window.open("", "_blank");
+    if (target){
+      target.document.open();
+      target.document.write(
+        '<!DOCTYPE html><html><head><meta charset="UTF-8" />' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0" />' +
+        '<title>' + filename + '</title></head>' +
+        '<body style="margin:0;background:#111;text-align:center;font-family:-apple-system,sans-serif;">' +
+        '<img src="' + blobUrl + '" style="max-width:100%;height:auto;display:block;margin:0 auto;" alt="' + filename + '" />' +
+        '<p style="color:#fff;padding:14px;font-size:14px;line-height:1.6;">長按圖片選擇「儲存到照片」。<br>若這個畫面是空白的，請改用手機／平板的螢幕截圖功能保存結果。</p>' +
+        '</body></html>'
+      );
+      target.document.close();
     }
   } else {
     const link = document.createElement("a");
@@ -1206,7 +1223,7 @@ el.prev.addEventListener("click", goPrev);
 document.getElementById("btn-download").addEventListener("click", downloadReport);
 document.getElementById("btn-restart").addEventListener("click", restart);
 
-// Email 欄位失焦時立即驗證格式，不用等到按下「開始測驗」才知道錯在哪裡
+// Email 欄位失焦時立即驗證格式，不用等到按下「開始檢測」才知道錯在哪裡
 document.getElementById("login-email").addEventListener("blur", () => {
   const emailInput = document.getElementById("login-email");
   const emailError = document.getElementById("login-email-error");
@@ -1238,7 +1255,7 @@ try {
     }
   }
 } catch (e){
-  console.warn("還原已儲存的結果連結或作答進度時發生錯誤（不影響全新測驗）：", e);
+  console.warn("還原已儲存的結果連結或作答進度時發生錯誤（不影響全新檢測）：", e);
   history.replaceState({ screen: "intro", domainIndex: 0 }, "");
 }
 
